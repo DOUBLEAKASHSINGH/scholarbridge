@@ -13,7 +13,6 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("student");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -30,15 +29,11 @@ export default function SignupPage() {
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         name,
-        role,
+        role: "student",
         createdAt: Date.now()
       });
 
-      if (role === "student") {
-        router.push("/onboarding");
-      } else {
-        router.push("/admin");
-      }
+      router.push("/onboarding");
     } catch (err: any) {
       setError(err.message || "Failed to create account.");
     } finally {
@@ -112,34 +107,6 @@ export default function SignupPage() {
               className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
               placeholder="••••••••"
             />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">I am a...</label>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setRole("student")}
-              className={`flex items-center justify-center gap-2 py-2 border rounded-xl transition-all ${
-                role === "student" 
-                  ? "bg-blue-50 border-blue-500 text-blue-700 ring-1 ring-blue-500" 
-                  : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              <User className="h-4 w-4" /> Student
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole("admin")}
-              className={`flex items-center justify-center gap-2 py-2 border rounded-xl transition-all ${
-                role === "admin" 
-                  ? "bg-blue-50 border-blue-500 text-blue-700 ring-1 ring-blue-500" 
-                  : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              <Briefcase className="h-4 w-4" /> Admin
-            </button>
           </div>
         </div>
 

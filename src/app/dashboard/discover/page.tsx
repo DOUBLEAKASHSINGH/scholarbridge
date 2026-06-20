@@ -25,9 +25,9 @@ export default function AdminDiscoverPage() {
     try {
       const data = await searchAndStructureOpportunities(query, filters);
       setResults(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Failed to scan the web.");
+      alert(`Failed to scan the web: ${err.message || "Unknown error"}`);
     } finally {
       setLoading(false);
     }

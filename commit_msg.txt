@@ -1,5 +1,0 @@
-Upgrade AI Ingestion Engine with live Tavily internet search
-
-- Installed `@tavily/core` SDK.
-- Added TAVILY_API_KEY to local environment.
-- Rewrote `searchAndStructureOpportunities` server action to perform a live internet search using Tavily first, and then pipe the raw snippet and URL data into OpenAI's gpt-4o model for strict JSON formatting and data extraction based on the predefined opportunity schema.

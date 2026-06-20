@@ -84,22 +84,6 @@ Ensure you only extract valid opportunities from the provided raw data. Do not h
     return parsed.opportunities || [];
   } catch (error: any) {
     console.error("AI Ingestion Error:", error);
-    // Return mock data fallback if API fails or key is dummy
-    return [
-      {
-        title: "Mock AI Engineering Scholarship (Fallback)",
-        type: "scholarship",
-        provider: "Tech Forward Foundation",
-        description: "A simulated fallback opportunity because the AI call failed or used a dummy key.",
-        fundingAmount: "$10,000",
-        eligibilityObject: {
-          degreeLevel: ["Undergraduate"],
-          targetCountries: ["International"],
-        },
-        location: "Remote",
-        deadline: "2026-12-31",
-        sourceUrl: "https://example.com/apply"
-      }
-    ];
+    throw new Error(error.message || "Failed to scan the web");
   }
 }
