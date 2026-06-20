@@ -14,16 +14,29 @@ export interface User {
 
 export type OpportunityType = 'scholarship' | 'internship' | 'grant';
 
+export interface OpportunityEligibility {
+  degreeLevel?: string[];
+  targetCountries?: string[];
+  incomeCeiling?: string;
+}
+
 export interface Opportunity {
   id: string;
   title: string;
   description: string;
   type: OpportunityType;
   deadline: number; // Unix timestamp
-  eligibility: string;
-  targetCountry?: string;
-  amount?: string;
+  eligibility: string; // Legacy string
+  targetCountry?: string; // Legacy
+  amount?: string; // Legacy
   provider: string;
+  
+  // New Expanded Fields
+  fundingAmount?: string; 
+  eligibilityObject?: OpportunityEligibility;
+  location?: "Remote" | "On-site" | "International";
+  sourceUrl?: string;
+  
   createdAt: number;
 }
 

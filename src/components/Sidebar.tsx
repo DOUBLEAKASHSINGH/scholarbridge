@@ -26,6 +26,7 @@ export default function Sidebar() {
 
   const adminLinks = [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Discover", href: "/dashboard/discover", icon: Search },
     { name: "Opportunities", href: "/dashboard/opportunities", icon: List },
     { name: "Post New", href: "/dashboard/opportunities/new", icon: PlusCircle },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
