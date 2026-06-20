@@ -34,7 +34,11 @@ export default function SignupPage() {
         createdAt: Date.now()
       });
 
-      router.push("/dashboard");
+      if (role === "student") {
+        router.push("/onboarding");
+      } else {
+        router.push("/admin");
+      }
     } catch (err: any) {
       setError(err.message || "Failed to create account.");
     } finally {

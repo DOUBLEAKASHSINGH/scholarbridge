@@ -1,20 +1,9 @@
-Phase 2: Admin Dashboard & Firestore CRUD complete
+Phase 3: Student Onboarding implemented
 
 Breakdown of Progress:
-Step 1: Project Initialization
-- Bootstrapped Next.js 14 App Router project.
-- Configured pure Tailwind CSS and Lucide React.
-- Installed Firebase, OpenAI, and Lucide dependencies.
-
-Step 2: Authentication & Foundation
-- Created firebase.ts configuration.
-- Implemented AuthContext.tsx for global state.
-- Built Login and Signup pages featuring Google Sign-In and Email/Password auth.
-- Implemented protected dashboard layout with unauthenticated redirection.
-
-Step 3: Database & Admin CRUD
-- Defined TypeScript interfaces for User and Opportunity (added targetCountry).
-- Created isolated Admin Dashboard (/app/admin/page.tsx) with strict role protection.
-- Built Firestore query functions in lib/db.ts for isolated database operations.
-- Implemented form to add Opportunities to Firestore.
-- Implemented interactive table to display and delete active Opportunities.
+Step 4: Student Profile & Onboarding
+- Updated User interface to include fieldOfStudy and countryOfResidence.
+- Created Student Onboarding form (/app/onboarding/page.tsx) with a beautiful Tailwind UI.
+- Implemented form logic to capture: Full Name, Education Level, Field of Study, Country of Residence, and Financial Need.
+- Hooked the form to Firestore using updateDoc to merge data with the Auth UID.
+- Adjusted the Signup flow to seamlessly redirect new students to the /onboarding route, and admins to /admin.

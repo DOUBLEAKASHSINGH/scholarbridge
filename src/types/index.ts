@@ -6,6 +6,8 @@ export interface User {
   name: string;
   role: UserRole;
   educationLevel?: string;
+  fieldOfStudy?: string;
+  countryOfResidence?: string;
   financialNeed?: string;
   createdAt: number;
 }
