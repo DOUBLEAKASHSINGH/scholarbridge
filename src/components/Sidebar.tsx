@@ -41,6 +41,7 @@ export default function Sidebar() {
           <GraduationCap className="h-8 w-8" />
           <span>ScholarBridge</span>
         </Link>
+        <p className="text-[10px] text-slate-500 mt-1.5 font-medium tracking-wide">ScholarBridge &ndash; We Help Build the Future</p>
       </div>
 
       <div className="flex-1 px-4 space-y-1 overflow-y-auto">

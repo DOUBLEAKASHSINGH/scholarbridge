@@ -11,6 +11,7 @@ export default function Header() {
   const { user } = useAuth();
   const router = useRouter();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(1);
   const notifRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,14 +44,14 @@ export default function Header() {
             className="p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 rounded-full transition-colors relative"
           >
             <Bell className="h-5 w-5" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            {unreadCount > 0 && <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>}
           </button>
 
           {showNotifications && (
             <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in-95">
               <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="font-bold text-slate-900">Notifications</h3>
-                <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">1 New</span>
+                {unreadCount > 0 && <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">{unreadCount} New</span>}
               </div>
               <div className="max-h-[300px] overflow-y-auto">
                 <div className="p-4 hover:bg-slate-50 border-b border-slate-50 transition-colors cursor-pointer">
@@ -60,7 +61,10 @@ export default function Header() {
                 </div>
               </div>
               <div className="p-3 text-center border-t border-slate-100">
-                <button className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
+                <button 
+                  onClick={() => setUnreadCount(0)}
+                  className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+                >
                   Mark all as read
                 </button>
               </div>

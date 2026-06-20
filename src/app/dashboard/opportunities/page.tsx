@@ -9,6 +9,7 @@ import Link from "next/link";
 export default function OpportunitiesPage() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [opportunityToDelete, setOpportunityToDelete] = useState<string | null>(null);
 
   const fetchOpps = async () => {
     setLoading(true);
@@ -26,10 +27,11 @@ export default function OpportunitiesPage() {
     fetchOpps();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this opportunity?")) return;
+  const handleDelete = async () => {
+    if (!opportunityToDelete) return;
     try {
-      await deleteOpportunity(id);
+      await deleteOpportunity(opportunityToDelete);
+      setOpportunityToDelete(null);
       fetchOpps();
     } catch (err) {
       console.error("Error deleting opportunity", err);
@@ -85,7 +87,7 @@ export default function OpportunitiesPage() {
                     <td className="px-6 py-4 text-slate-600">{new Date(opp.deadline).toLocaleDateString()}</td>
                     <td className="px-6 py-4 text-right">
                       <button
-                        onClick={() => handleDelete(opp.id)}
+                        onClick={() => setOpportunityToDelete(opp.id)}
                         className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors inline-flex items-center justify-center"
                         title="Delete Opportunity"
                       >
@@ -99,6 +101,29 @@ export default function OpportunitiesPage() {
           </table>
         </div>
       </div>
+
+      {opportunityToDelete && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-sm shadow-2xl zoom-in-95 animate-in duration-200">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Delete Opportunity</h3>
+            <p className="text-sm text-slate-600 mb-6">Are you sure you want to delete this opportunity? This action cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setOpportunityToDelete(null)}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleDelete}
+                className="px-4 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
