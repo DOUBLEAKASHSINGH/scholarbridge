@@ -38,15 +38,12 @@ export default function AICoach({ opportunity, user, onClose }: AICoachProps) {
     setLoading(true);
 
     try {
-      const oppContext = `${opportunity.title} (${opportunity.type}). Provider: ${opportunity.provider}. Description: ${opportunity.description}. Eligibility: ${opportunity.eligibility}.`;
-      const userContext = `Education: ${user.educationLevel || 'N/A'}. Need: ${user.financialNeed || 'N/A'}.`;
-      
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          opportunityContext: oppContext,
-          userProfile: userContext,
+          opportunity: opportunity,
+          userProfile: user,
           messages: newMessages.slice(1) // exclude the initial hardcoded greeting
         }),
       });

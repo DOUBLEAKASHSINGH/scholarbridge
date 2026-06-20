@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { opportunityContext, userProfile, messages } = body;
+    const { opportunity, userProfile, messages } = body;
 
     if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "dummy_gemini_key" || process.env.GEMINI_API_KEY === "dummy_key") {
       return NextResponse.json({
@@ -14,19 +14,22 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const systemPrompt = `
-      You are an expert AI scholarship and career coach for ScholarBridge.
-      You are acting as an encouraging academic advisor to help a student apply for the following opportunity:
-      ${opportunityContext}
-      
-      The student's profile:
-      ${userProfile}
-      
-      CRITICAL RULE: If the student profile attributes say things like "NA", "ABC", "top 100 institute", or are missing/empty, treat them as MISSING. You must politely ask the student for their real academic details and goals first. Do NOT make assumptions and do NOT reference the placeholder text.
-      
-      Your goal is to provide actionable advice, review essay ideas, and answer questions about this specific opportunity.
-      Keep your answers concise, encouraging, and highly specific to the provided opportunity context.
-    `;
+    const systemPrompt = `You are a personalized academic and career advisor for ScholarBridge. 
+You are speaking to a student with the following profile:
+- Name: ${userProfile?.name || "the student"}
+- Degree/Major: ${userProfile?.educationLevel || "Not specified"} in ${userProfile?.fieldOfStudy || "Not specified"}
+- Institute: ${userProfile?.institute || "Not specified"}
+- Demographics/Needs: Gender: ${userProfile?.genderIdentity || "Not specified"}, Special: ${userProfile?.specialDemographics || "None"}, Financial: ${userProfile?.financialNeed || "None"}
+
+They are asking for help applying to this specific opportunity:
+- Title: ${opportunity?.title}
+- Type: ${opportunity?.type}
+- Description: ${opportunity?.description}
+
+STRICT RULES:
+1. DO NOT ask the student for their background, degree, or college. You already have this information above.
+2. Use their profile details to immediately provide highly tailored, specific advice on how they can win this opportunity.
+3. If they are missing a specific requirement, point it out gently. If they are a perfect match, tell them exactly what to highlight in their essay or resume.`;
 
     const formattedMessages = messages.map((m: any) => ({
       role: m.role === "assistant" ? "model" : "user",
