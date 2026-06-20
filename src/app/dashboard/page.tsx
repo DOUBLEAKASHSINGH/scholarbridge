@@ -56,7 +56,7 @@ export default function DashboardPage() {
           opps.push({ id: doc.id, ...doc.data() } as Opportunity);
         });
         setOpportunities(opps);
-
+        if (user?.role === "student" && opps.length > 0) {
           const matchResults = await generateMatches({
             educationLevel: user.educationLevel,
             financialNeed: user.financialNeed,
