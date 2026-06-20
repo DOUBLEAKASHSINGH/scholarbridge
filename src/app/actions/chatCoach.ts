@@ -1,10 +1,8 @@
 "use server";
 
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "dummy_key",
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
 
 export async function chatWithCoach(
   opportunityContext: string,
@@ -12,8 +10,8 @@ export async function chatWithCoach(
   messageHistory: { role: "user" | "assistant", content: string }[],
   newMessage: string
 ) {
-  if (!process.env.OPENAI_API_KEY) {
-    return "This is a simulated AI response. Please add an OpenAI API key to enable the real AI Coach.";
+  if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "dummy_key" || process.env.GEMINI_API_KEY === "dummy_gemini_key") {
+    return "This is a simulated AI response. Please add a GEMINI_API_KEY to enable the real AI Coach.";
   }
 
   try {
@@ -29,20 +27,28 @@ export async function chatWithCoach(
       Keep your answers concise, encouraging, and highly specific to the provided opportunity context.
     `;
 
-    const messages: any[] = [
-      { role: "system", content: systemPrompt },
-      ...messageHistory,
-      { role: "user", content: newMessage }
+    const formattedHistory = messageHistory.map(m => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }]
+    }));
+
+    const formattedMessages = [
+      ...formattedHistory,
+      { role: "user", parts: [{ text: newMessage }] }
     ];
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: messages,
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: systemPrompt
     });
 
-    return response.choices[0].message.content || "I couldn't generate a response.";
+    const result = await model.generateContent({
+      contents: formattedMessages
+    });
+
+    return result.response.text() || "I couldn't generate a response.";
   } catch (error) {
-    console.error("OpenAI Chat error:", error);
+    console.error("Gemini Chat error:", error);
     return "Sorry, I encountered an error. Please try again later.";
   }
 }
