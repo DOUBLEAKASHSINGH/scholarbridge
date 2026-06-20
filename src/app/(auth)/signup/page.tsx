@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
@@ -15,7 +16,14 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, authLoading, router]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();

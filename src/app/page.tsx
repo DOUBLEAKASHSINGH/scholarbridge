@@ -1,7 +1,10 @@
+"use client";
 import Link from "next/link";
 import { GraduationCap, ArrowRight, Sparkles, Target, ShieldCheck } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
+  const { user } = useAuth();
   return (
     <div className="flex flex-col min-h-screen">
       {/* Navigation */}
@@ -11,12 +14,20 @@ export default function Home() {
           <span>ScholarBridge</span>
         </div>
         <div className="flex gap-4">
-          <Link href="/login" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
-            Log in
-          </Link>
-          <Link href="/signup" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-            Sign up
-          </Link>
+          {user ? (
+            <Link href="/dashboard" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+              Go to Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                Log in
+              </Link>
+              <Link href="/signup" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -36,12 +47,20 @@ export default function Home() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/signup" className="px-8 py-4 text-base font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-2">
-            Get Started <ArrowRight className="h-5 w-5" />
-          </Link>
-          <Link href="/login" className="px-8 py-4 text-base font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">
-            I already have an account
-          </Link>
+          {user ? (
+            <Link href="/dashboard" className="px-8 py-4 text-base font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-2">
+              Go to Dashboard <ArrowRight className="h-5 w-5" />
+            </Link>
+          ) : (
+            <>
+              <Link href="/signup" className="px-8 py-4 text-base font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-2">
+                Get Started <ArrowRight className="h-5 w-5" />
+              </Link>
+              <Link href="/login" className="px-8 py-4 text-base font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">
+                I already have an account
+              </Link>
+            </>
+          )}
         </div>
       </main>
 

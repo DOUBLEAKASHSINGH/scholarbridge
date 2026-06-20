@@ -39,7 +39,7 @@ export default function Sidebar() {
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-64 bg-white border-r border-slate-200 h-full flex-col shrink-0">
         <div className="p-6">
-          <Link href="/" className="flex items-center gap-2 text-blue-600 font-bold text-xl">
+          <Link href="/dashboard" className="flex items-center gap-2 text-blue-600 font-bold text-xl">
             <GraduationCap className="h-8 w-8" />
             <span>ScholarBridge</span>
           </Link>

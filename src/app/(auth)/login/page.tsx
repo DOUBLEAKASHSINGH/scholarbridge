@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user, loading: authLoading } = useAuth();
   
   // Forgot password state
   const [showResetModal, setShowResetModal] = useState(false);
@@ -22,6 +24,12 @@ export default function LoginPage() {
   const [resetLoading, setResetLoading] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, authLoading, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
