@@ -14,8 +14,9 @@ export async function searchAndStructureOpportunities(query: string, filters: Re
       throw new Error("Missing TAVILY_API_KEY environment variable.");
     }
 
-    // Step 0: Check Input Query
-    const safeQuery = (query && typeof query === "string" && query.trim() !== "") ? query.trim() : "General opportunities";
+    // Step 0: Check Input Query and Optimize for Job Extraction
+    const baseQuery = (query && typeof query === "string" && query.trim() !== "") ? query.trim() : "entry level software internships";
+    const safeQuery = `${baseQuery} (internship OR job OR scholarship) for students "apply" -"what is" -wikipedia -definition -blog`;
 
     // Step 1: Initialize Tavily and perform live internet search
     const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
@@ -45,28 +46,25 @@ export async function searchAndStructureOpportunities(query: string, filters: Re
 
     // Step 3: Pass raw data to Gemini for strict structuring
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const systemPrompt = `You are an expert scholarship and grant researcher and database engineer.
-You are provided with a JSON array of raw search results from the live internet.
-Your task is to extract, deduplicate, and clean this search data into a strictly structured JSON array of highly accurate opportunities that match the user's filters.
+    const systemPrompt = `You are a career data extractor. I am giving you raw web search results. You must discard any informational articles, blogs, or definitions. You must ONLY extract actual job postings, internships, or scholarships. 
 
-You MUST return a JSON object containing an array of opportunities.
-The JSON structure MUST exactly match this schema:
+Return a raw JSON object containing an array named "opportunities". Each object in the array MUST EXACTLY match this schema to prevent frontend crashes:
 {
   "opportunities": [
     {
       "title": "Name of the opportunity",
-      "type": "scholarship" | "internship" | "grant",
-      "provider": "Name of the offering organization",
-      "description": "Clear overview of what it covers",
-      "fundingAmount": "Text string (e.g. 'Full Tuition', '$5,000 Stipend', 'Paid')",
+      "type": "Scholarship" | "Internship" | "Job" | "Grant",
+      "provider": "Name of the offering organization or company",
+      "description": "Clear short summary of what it covers",
+      "fundingAmount": "stipend/salary or 'Unspecified'",
       "eligibilityObject": {
         "degreeLevel": ["High School", "Undergraduate", "Postgraduate", "PhD"],
         "targetCountries": ["List", "Of", "Eligible", "Countries", "or 'International'"],
         "incomeCeiling": "String if applicable, else omit"
       },
       "location": "Remote" | "On-site" | "International",
-      "deadline": "YYYY-MM-DD or fallback placeholder text if not specified",
-      "sourceUrl": "The exact URL extracted from the search result"
+      "deadline": "YYYY-MM-DD or 'Unspecified'",
+      "sourceUrl": "The exact URL extracted from the search result (the apply link)"
     }
   ]
 }
