@@ -1,62 +1,68 @@
-# ScholarBridge: 0 to 100 Development Breakdown
-
-## The Vision
-Every year, millions of dollars in scholarships and life-changing internships go unawarded because of a massive information disconnect. Students face overwhelming criteria, while educational non-profits lack the resources to manually hunt for opportunities. We built **ScholarBridge** to fix this by leveraging autonomous AI to discover, structure, and match capital with student potential.
-
-## The Technology Stack & Why We Chose It
-1. **Next.js 15 (App Router) & React**: Chosen for fast server-side rendering, seamless full-stack API routes, and robust file-based routing.
-2. **Tailwind CSS**: Utility-first styling allowed us to rapidly build a highly-polished, premium "SaaS" UI without fighting complex CSS cascade rules.
-3. **Firebase (Auth, Firestore, Storage)**: 
-   - *Auth*: Handled secure Email/Password and Google sign-ins instantly.
-   - *Firestore*: A NoSQL real-time document database perfect for rapidly iterating our schema and storing dynamic opportunity/user data.
-   - *Storage*: Allowed us to implement native, secure file uploads for user Resumes and SOPs.
-4. **Google Gemini API (`gemini-2.0-flash`)**: The core AI engine. Chosen for its massive context window and blistering speed. It powers our web parsing, match-scoring, and the AI Mentorship Coach.
-5. **Tavily Search API**: An AI-optimized web search engine that scrapes and summarizes live internet data, bypassing traditional search engine noise.
-6. **Vercel**: For instant, zero-config CI/CD deployment.
+This is a great structure! To make it "copy-paste ready" for your GitHub README, I have cleaned it up, added the architecture diagram, and professionalized the tone.
 
 ---
 
-## Step-by-Step Execution: From Scratch to Production
+# ScholarBridge
 
-### Phase 1: Foundation & Security
-- **Bootstrapping**: Initialized the Next.js project and configured Tailwind.
-- **Landing Page**: Built a visually stunning, conversion-optimized landing page with animated gradients and compelling copy.
-- **Authentication**: Integrated Firebase Auth. Created a strict role-based system (Students vs. Admins) storing user metadata in Firestore.
-- **Route Protection**: Built layout wrappers that securely lock unauthorized users out of the dashboards.
+ScholarBridge is an intelligent, full-stack SaaS platform designed to eliminate the information gap between students and life-changing financial aid. By leveraging autonomous AI agents, we discover, structure, and match opportunities with student potential.
 
-### Phase 2: The Student Profile & Tracker
-- **Profile Engine**: Developed a sophisticated onboarding flow where students define their Academic Level, Financial Need, and Demographic tags (e.g., First-Gen, STEM) using multi-select chips.
-- **Dual Document Input**: Implemented a flexible system allowing students to either paste a Google Drive link OR natively upload their PDF Resume/SOP directly to Firebase Storage.
-- **Kanban Tracker**: Built "My Tracker", allowing students to save opportunities and move them through stages (Drafting → Applied → Interview → Accepted).
+## 1. Project Overview
 
-### Phase 3: The Autonomous AI Web Discovery Engine
-- **The Problem**: Finding niche scholarships is incredibly manual.
-- **The Solution**: Built an admin workspace where a user inputs a broad query (e.g., "Undergraduate Women in STEM Scholarships 2026").
-- **The Pipeline**: 
-  1. Pinged Tavily API to scrape the live web for matching programs.
-  2. Piped the unstructured web text directly into Google Gemini.
-  3. Prompted Gemini to extract key criteria (Title, Provider, Deadline, Amount, Geography) and format it into a strict JSON schema.
-  4. Built a 1-click import button to instantly save these validated opportunities to our Firestore database.
+ScholarBridge solves the "discovery problem" where millions in scholarships, internships, and grants go unspent due to poor visibility and bureaucratic complexity.
 
-### Phase 4: AI-Curated Matching Algorithm
-- **Personalized Feeds**: Built a dashboard feed that compares the global opportunity database against the logged-in student's specific profile demographics.
-- **Match Scoring**: Used Gemini to evaluate the alignment, injecting a "✨ AI Match Score" tag and a personalized sentence explaining *why* the student is a strong fit.
+The platform provides three core capabilities:
 
-### Phase 5: The AI-Powered Mentorship Coach
-- **Context-Aware Assistance**: Built a slide-out chat interface attached to every opportunity card.
-- **Hyper-Personalization**: Under the hood, we feed Gemini the student's profile data, their uploaded Resume/SOP text, and the specific rules of the opportunity.
-- **The Result**: The Coach doesn't just give generic advice—it explicitly drafts essay outlines, highlights resume gaps, and strategizes based on the student's actual life context.
+* **AI Web Discovery Engine**: An admin-facing pipeline that utilizes Tavily for intent-based web retrieval and Gemini for structured data extraction, turning messy web content into verified database entries.
+* **Personalized Match Scoring**: A student-facing engine that cross-references a user’s academic profile, financial need, and demographic tags against the opportunity database to provide a "Match Score" with tailored reasoning.
+* **AI Mentorship Coach**: A zero-hallucination, context-aware chat interface that assists students in drafting essays and optimizing resumes by injecting their unique profile data directly into the AI's prompt.
 
-### Phase 6: UI Polish & AI Transparency
-- **Premium Aesthetics**: Enforced a global `bg-gradient-to-br` with indestructible `!important` Tailwind overrides to guarantee a premium SaaS look across all devices and prevent library conflicts.
-- **Transparency Rebrand**: Explicitly renamed components to highlight the tech ("AI Web Discovery Engine", "AI-Curated Matches") and added "Gemini & Tavily Powered" badges to make the value prop obvious to judges and users.
-- **Static Content**: Deployed beautifully formatted `/about` and `/docs` pages using Tailwind typography.
+## 2. Architecture & Tech Stack
+
+The platform uses a modern Next.js 16/Tailwind 4 stack, leveraging Server Actions to bridge the gap between secure database operations and LLM-powered intelligence.
+
+| Layer | Technology | Purpose |
+| --- | --- | --- |
+| **Frontend** | Next.js 16, React 19, Tailwind CSS 4 | Fast, server-rendered, and responsive SaaS UI. |
+| **Database/Auth** | Firebase (Auth, Firestore, Storage) | Secure multi-user sessions, persistence, and PDF storage. |
+| **AI Engine** | Google Gemini (2.0-flash/3.5) | Web content parsing, match reasoning, and coaching. |
+| **Search/Ingestion** | Tavily AI API | Intelligent, application-focused web search. |
+| **Deployment** | Vercel | Instant, zero-config CI/CD. |
+
+## 3. Core Logic Flow
+
+The data flow follows a secure path from external search engines to the internal Firestore database:
+
+1. **Ingestion (`ingest.ts`)**: Admins input a query. The system refines the search to prioritize "apply" pages, scrapes results, and forces Gemini to return a strict `JSON` schema.
+2. **Matching (`match.ts`)**: Student profiles are pulled from Firestore and sent alongside opportunity tags to Gemini to calculate personalized alignment.
+3. **Coaching (`chatCoach.ts`)**: User-uploaded PDFs (via Firebase Storage) and profile details are injected into the LLM context to ensure advice is specific to the student's actual career path.
+
+## 4. Repository Structure
+
+```shell
+scholarbridge/
+├── src/
+│   ├── app/
+│   │   ├── actions/            # Server-side AI and Ingestion logic
+│   │   ├── dashboard/          # Student-facing workspace
+│   │   ├── admin/              # Admin discovery & ingestion
+│   │   └── api/                # Route handlers for chat/AI
+│   ├── components/             # Reusable UI (AICoach, Sidebar, etc.)
+│   ├── contexts/               # Firebase Auth & User state
+│   ├── lib/                    # Firebase and API initialization
+│   └── types/                  # TypeScript interfaces
+├── public/                     # Static assets
+└── tailwind.config.ts          # Styling configuration
+
+```
+
+## 5. Getting Started
+
+To run this repository locally, you must configure the following environment variables:
+
+* `GEMINI_API_KEY`: API key for Gemini models.
+* `TAVILY_API_KEY`: API key for web discovery.
+* `NEXT_PUBLIC_FIREBASE_...`: Configuration keys for Firebase Auth/Firestore/Storage.
 
 ---
 
-## What Can Be Done Further (The Future Roadmap)
-
-1. **Automated Cron Scheduling**: Configure the AI Web Discovery Engine to run autonomously every night via a Vercel Cron Job, constantly populating the database while everyone sleeps.
-2. **Native PDF OCR Parsing**: Implement an OCR pipeline to automatically read the text out of the uploaded PDF Resumes and dynamically inject it into the Gemini prompt, removing any manual extraction friction.
-3. **Browser Extension for Autofill**: Build a Chrome extension that takes the AI's generated essays and automatically fills out external scholarship application portals.
-4. **Community & Peer Review**: Allow students to share successful applications anonymously so the AI can train on and reference historically winning essays.
+*Built for Hackathon 1.0 by **Akash Singh***
