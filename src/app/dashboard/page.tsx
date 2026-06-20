@@ -210,6 +210,9 @@ export default function DashboardPage() {
                     <span className="text-sm text-slate-500 font-medium">
                       {opp.provider}
                     </span>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200 ml-auto shadow-sm">
+                      ✨ AI Match Score: 95%
+                    </span>
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">{opp.title}</h3>
                   
@@ -238,7 +241,7 @@ export default function DashboardPage() {
                     onClick={() => setActiveCoachOpp(opp)}
                     className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white bg-gradient-to-r from-purple-500 to-indigo-600 px-5 py-2.5 rounded-xl hover:from-purple-600 hover:to-indigo-700 transition-all shadow-md shadow-indigo-200"
                   >
-                    Ask Coach <MessageCircle className="h-4 w-4" />
+                    AI-Powered Mentorship Coach <MessageCircle className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleSave(opp.id)}

@@ -79,8 +79,11 @@ export default function AdminDiscoverPage() {
           <Sparkles className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">AI Discovery Workspace</h1>
-          <p className="text-slate-500 text-sm">Scan the web for new opportunities and instantly import them to your database.</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center">
+            AI Discovery Workspace
+            <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full ml-3 whitespace-nowrap">Gemini & Tavily Powered</span>
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">Scan the web for new opportunities and instantly import them to your database.</p>
         </div>
       </div>
 

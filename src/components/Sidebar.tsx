@@ -21,8 +21,8 @@ export default function Sidebar() {
   const { user } = useAuth();
 
   const studentLinks = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Discover", href: "/dashboard/explore", icon: Search },
+    { name: "AI-Curated Matches", href: "/dashboard", icon: LayoutDashboard },
+    { name: "AI Web Discovery Engine", href: "/dashboard/explore", icon: Search },
     { name: "My Tracker", href: "/dashboard/tracker", icon: BookmarkCheck },
     { name: "Profile", href: "/dashboard/profile", icon: GraduationCap },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
@@ -30,7 +30,7 @@ export default function Sidebar() {
 
   const adminLinks = [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Web Scanner", href: "/dashboard/discover", icon: Search },
+    { name: "AI Web Discovery Engine", href: "/dashboard/discover", icon: Search },
     { name: "Directory", href: "/dashboard/students", icon: List },
     { name: "Admin Profile", href: "/dashboard/profile", icon: Settings },
   ];
