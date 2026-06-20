@@ -1,5 +1,6 @@
-UI Polish: Improved Input Text Visibility
+Fix Profile Syncing, Add Searchable Country Dropdown, & Resolve 404s
 
-- Globally updated all form inputs, textareas, and select elements across the application (Login, Signup, Onboarding, Admin pages).
-- Enforced `text-slate-900` to ensure user-typed text is clearly visible and dark, fixing the issue where text blended into the input backgrounds.
-- Added `placeholder:text-slate-400` so placeholder text remains distinct from the user's typed input.
+- Upgraded `AuthContext.tsx` to use Firebase `onSnapshot` instead of `getDoc`, ensuring the local user state syncs with the database in real-time without needing a manual refresh.
+- Built a custom `SearchableSelect` pure-Tailwind component for the "Country of Residence" field to easily filter through a list of countries.
+- Added all missing editable fields (Full Name, Country, Field of Study) to the Dashboard Profile page.
+- Fixed sidebar 404 errors by building the `/dashboard/settings` and `/dashboard/opportunities` pages, completely migrating Admin functionality natively into the Dashboard structure.

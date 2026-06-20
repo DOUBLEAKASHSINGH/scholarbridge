@@ -5,18 +5,26 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { Save } from "lucide-react";
+import SearchableSelect from "@/components/SearchableSelect";
+import { COUNTRIES } from "@/lib/countries";
 
 export default function ProfilePage() {
   const { user } = useAuth();
   
+  const [fullName, setFullName] = useState("");
   const [educationLevel, setEducationLevel] = useState("");
+  const [fieldOfStudy, setFieldOfStudy] = useState("");
+  const [countryOfResidence, setCountryOfResidence] = useState("");
   const [financialNeed, setFinancialNeed] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (user) {
+      setFullName(user.name || "");
       setEducationLevel(user.educationLevel || "");
+      setFieldOfStudy(user.fieldOfStudy || "");
+      setCountryOfResidence(user.countryOfResidence || "");
       setFinancialNeed(user.financialNeed || "");
     }
   }, [user]);
@@ -29,7 +37,10 @@ export default function ProfilePage() {
     setSuccess(false);
     try {
       await updateDoc(doc(db, "users", user.id), {
+        name: fullName,
         educationLevel,
+        fieldOfStudy,
+        countryOfResidence,
         financialNeed
       });
       setSuccess(true);
@@ -55,19 +66,57 @@ export default function ProfilePage() {
           </div>
         )}
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">Education Level</label>
-          <select
-            value={educationLevel}
-            onChange={(e) => setEducationLevel(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-          >
-            <option value="">Select your level</option>
-            <option value="High School">High School</option>
-            <option value="Undergraduate">Undergraduate</option>
-            <option value="Graduate">Graduate</option>
-            <option value="PhD">PhD</option>
-          </select>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Full Name</label>
+            <input
+              type="text"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              placeholder="Your Name"
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Country of Residence</label>
+            <SearchableSelect
+              value={countryOfResidence}
+              onChange={setCountryOfResidence}
+              options={COUNTRIES}
+              placeholder="Search Country..."
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Education Level</label>
+            <select
+              value={educationLevel}
+              onChange={(e) => setEducationLevel(e.target.value)}
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            >
+              <option value="">Select your level</option>
+              <option value="High School">High School</option>
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Graduate">Graduate</option>
+              <option value="PhD">PhD</option>
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Field of Study</label>
+            <input
+              type="text"
+              required
+              value={fieldOfStudy}
+              onChange={(e) => setFieldOfStudy(e.target.value)}
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              placeholder="e.g. Computer Science"
+            />
+          </div>
         </div>
 
         <div className="space-y-2">

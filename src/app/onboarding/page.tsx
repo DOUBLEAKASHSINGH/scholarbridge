@@ -6,6 +6,8 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { GraduationCap, Loader2, ArrowRight } from "lucide-react";
+import SearchableSelect from "@/components/SearchableSelect";
+import { COUNTRIES } from "@/lib/countries";
 
 export default function OnboardingPage() {
   const { user, loading: authLoading } = useAuth();
@@ -106,13 +108,11 @@ export default function OnboardingPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Country of Residence</label>
-              <input
-                type="text"
-                required
+              <SearchableSelect
                 value={countryOfResidence}
-                onChange={(e) => setCountryOfResidence(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
-                placeholder="e.g. United States"
+                onChange={setCountryOfResidence}
+                options={COUNTRIES}
+                placeholder="Search Country..."
               />
             </div>
           </div>
