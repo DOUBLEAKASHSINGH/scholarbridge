@@ -45,6 +45,8 @@ export interface Opportunity {
   eligibilityObject?: OpportunityEligibility;
   location?: "Remote" | "On-site" | "International";
   sourceUrl?: string;
+  targetGender?: string;
+  targetDemographic?: string;
   
   createdAt: number;
 }

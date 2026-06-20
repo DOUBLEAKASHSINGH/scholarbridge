@@ -64,7 +64,9 @@ Return a raw JSON object containing an array named "opportunities". Each object 
       },
       "location": "Remote" | "On-site" | "International",
       "deadline": "YYYY-MM-DD or 'Unspecified'",
-      "sourceUrl": "The exact URL extracted from the search result (the apply link)"
+      "sourceUrl": "The exact URL extracted from the search result (the apply link)",
+      "targetGender": "Extract if restricted (e.g., 'Female', 'Male', or 'Any')",
+      "targetDemographic": "Extract niche requirements (e.g., 'Visually Impaired', 'First-Generation') or 'None'"
     }
   ]
 }
