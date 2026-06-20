@@ -29,7 +29,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="flex flex-col min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50 via-slate-50 to-white text-slate-900">
+      <body className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-blue-50 text-slate-900 font-sans antialiased">
         <AuthProvider>
           <div className="flex-1 flex flex-col">
             {children}
