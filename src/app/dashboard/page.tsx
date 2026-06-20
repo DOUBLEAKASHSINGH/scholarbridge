@@ -5,14 +5,13 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Opportunity } from "@/types";
-import { generateMatches } from "@/app/actions/matchOpportunities";
+import { generateMatches } from "@/app/actions/match";
 import { Sparkles, Briefcase, GraduationCap, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 interface MatchResult {
   opportunityId: string;
-  score: number;
-  reason: string;
+  matchReason: string;
 }
 
 export default function DashboardPage() {
@@ -34,9 +33,10 @@ export default function DashboardPage() {
 
         if (user?.role === "student" && opps.length > 0) {
           const matchResults = await generateMatches({
-            role: user.role,
             educationLevel: user.educationLevel,
-            financialNeed: user.financialNeed
+            financialNeed: user.financialNeed,
+            fieldOfStudy: user.fieldOfStudy,
+            countryOfResidence: user.countryOfResidence
           }, opps);
           setMatches(matchResults);
         }
@@ -139,19 +139,14 @@ export default function DashboardPage() {
                   
                   <div className="flex items-center gap-2 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
                     <Sparkles className="h-4 w-4 text-indigo-500 flex-shrink-0" />
-                    <p className="text-sm text-indigo-700 italic">"{match.reason}"</p>
+                    <p className="text-sm text-indigo-700 italic">"{match.matchReason}"</p>
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-end gap-4">
-                  <div className="flex flex-col items-center justify-center w-16 h-16 rounded-full border-4 border-emerald-100 bg-emerald-50 text-emerald-700">
-                    <span className="text-lg font-bold leading-none">{match.score}%</span>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider">Match</span>
-                  </div>
-                  
+                <div className="flex flex-col items-end gap-4 justify-center">
                   <Link 
                     href={`/dashboard/opportunities/${opp.id}`}
-                    className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 group-hover:translate-x-1 transition-transform"
+                    className="flex items-center gap-2 text-sm font-medium text-white bg-blue-600 px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
                   >
                     View Details <ArrowRight className="h-4 w-4" />
                   </Link>
