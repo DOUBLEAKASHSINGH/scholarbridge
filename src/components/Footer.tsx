@@ -68,7 +68,7 @@ export default function Footer() {
             © {new Date().getFullYear()} ScholarBridge. All rights reserved.
           </p>
           <p className="text-sm font-medium text-slate-900">
-            Founded & Built by <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text font-bold text-base">Akash Singh</span>
+            Founded & Built by <a href="https://www.linkedin.com/in/doubleakashsingh/" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text font-bold text-base hover:underline transition-all">Akash Singh</a>
           </p>
         </div>
       </div>

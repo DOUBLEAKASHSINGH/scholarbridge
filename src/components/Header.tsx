@@ -47,7 +47,7 @@ export default function Header() {
         </h2>
       </div>
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <div className="relative" ref={notifRef}>
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
@@ -81,12 +81,25 @@ export default function Header() {
             </div>
           )}
         </div>
+
+        <div className="h-6 w-px bg-slate-200 mx-2"></div>
+
+        <div className="flex items-center gap-3 mr-2">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold shrink-0">
+            {user?.name?.charAt(0) || "U"}
+          </div>
+          <div className="hidden md:block text-left">
+            <p className="text-sm font-bold text-slate-900 leading-tight truncate max-w-[120px]">{user?.name}</p>
+            <p className="text-xs text-slate-500 capitalize leading-tight">{user?.role}</p>
+          </div>
+        </div>
+
         <button 
           onClick={handleLogout}
           className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg transition-colors border border-slate-200"
         >
           <LogOut className="h-4 w-4" />
-          Sign out
+          <span className="hidden sm:inline">Sign out</span>
         </button>
       </div>
     </header>

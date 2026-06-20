@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,12 +9,14 @@ import {
   Search, 
   BookmarkCheck, 
   Settings, 
-  PlusCircle, 
   List,
-  GraduationCap
+  GraduationCap,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 export default function Sidebar() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const { user } = useAuth();
 
@@ -37,16 +40,28 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex w-64 bg-white border-r border-slate-200 h-full flex-col shrink-0">
-        <div className="p-6">
-          <Link href="/dashboard" className="flex items-center gap-2 text-blue-600 font-bold text-xl">
-            <GraduationCap className="h-8 w-8" />
-            <span>ScholarBridge</span>
-          </Link>
-          <p className="text-[10px] text-slate-500 mt-1.5 font-medium tracking-wide">ScholarBridge &ndash; We Help Build the Future</p>
-        </div>
+      <div className={`hidden md:flex bg-white border-r border-slate-200 h-full flex-col shrink-0 transition-all duration-300 ease-in-out relative ${isCollapsed ? 'w-20' : 'w-64'}`}>
+        {/* Toggle Button */}
+        <button 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="absolute -right-3 top-8 bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-300 rounded-full p-1 shadow-sm transition-colors z-10"
+        >
+          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
 
-        <div className="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
+        <div className={`p-6 flex items-center ${isCollapsed ? 'justify-center' : ''}`}>
+          <Link href="/dashboard" className={`flex items-center gap-2 text-blue-600 font-bold ${isCollapsed ? 'justify-center' : ''}`}>
+            <GraduationCap className="h-8 w-8 shrink-0" />
+            {!isCollapsed && <span className="text-xl">ScholarBridge</span>}
+          </Link>
+        </div>
+        {!isCollapsed && (
+          <div className="px-6 pb-4">
+            <p className="text-[10px] text-slate-500 font-medium tracking-wide">ScholarBridge &ndash; We Help Build the Future</p>
+          </div>
+        )}
+
+        <div className="flex-1 px-4 py-2 space-y-2 overflow-y-auto mt-2">
           {links.map((link) => {
             const isActive = pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href));
             const Icon = link.icon;
@@ -55,28 +70,19 @@ export default function Sidebar() {
                 key={link.name}
                 href={link.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                  isCollapsed ? 'justify-center' : ''
+                } ${
                   isActive 
                     ? "bg-blue-600 text-white shadow-md shadow-blue-200" 
                     : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`}
+                title={isCollapsed ? link.name : undefined}
               >
-                <Icon className={`h-5 w-5 ${isActive ? "text-white" : "text-slate-400"}`} />
-                {link.name}
+                <Icon className={`h-5 w-5 shrink-0 ${isActive ? "text-white" : "text-slate-400"}`} />
+                {!isCollapsed && <span>{link.name}</span>}
               </Link>
             );
           })}
-        </div>
-
-        <div className="p-4 border-t border-slate-100">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-50 border border-slate-100">
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold shrink-0">
-              {user?.name?.charAt(0) || "U"}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-slate-900 truncate">{user?.name}</p>
-              <p className="text-xs text-slate-500 truncate capitalize">{user?.role}</p>
-            </div>
-          </div>
         </div>
       </div>
 
