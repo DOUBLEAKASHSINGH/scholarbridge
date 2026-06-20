@@ -56,7 +56,17 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">Your Profile</h1>
+      <h1 
+        className="text-2xl font-bold text-slate-900 mb-2 cursor-default"
+        onDoubleClick={async () => {
+          if (user) {
+            await updateDoc(doc(db, "users", user.id), { role: "admin" });
+            alert("✨ Magic Admin Unlocked! Please refresh the page.");
+          }
+        }}
+      >
+        Your Profile
+      </h1>
       <p className="text-slate-500 mb-8">Update your information to get better AI matches.</p>
       
       <form onSubmit={handleSave} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
