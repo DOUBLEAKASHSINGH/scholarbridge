@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
     const { opportunityContext, userProfile, messages } = body;
 
     if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "dummy_gemini_key" || process.env.GEMINI_API_KEY === "dummy_key") {
-      return NextResponse.json({ 
-        reply: "This is a simulated AI response. Please add a GEMINI_API_KEY to enable the real AI Coach." 
+      return NextResponse.json({
+        reply: "This is a simulated AI response. Please add a GEMINI_API_KEY to enable the real AI Coach."
       });
     }
 
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     }));
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.5-flash",
       systemInstruction: systemPrompt
     });
 
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     });
 
     const reply = result.response.text() || "I couldn't generate a response.";
-    
+
     return NextResponse.json({ reply });
   } catch (error: any) {
     console.error("Gemini API error:", error);
