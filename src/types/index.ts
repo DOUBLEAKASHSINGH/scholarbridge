@@ -5,6 +5,7 @@ export interface User {
   email: string;
   name: string;
   role: UserRole;
+  // Student Fields
   educationLevel?: string;
   fieldOfStudy?: string;
   institute?: string;
@@ -12,6 +13,9 @@ export interface User {
   financialNeed?: string;
   resumeUrl?: string;
   sopUrl?: string;
+  // Admin Fields
+  organizationName?: string;
+  contactEmail?: string;
   createdAt: number;
 }
 

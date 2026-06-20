@@ -4,11 +4,135 @@ import { useState, useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
-import { Save, User as UserIcon, BookOpen, Link as LinkIcon, DollarSign } from "lucide-react";
+import { Save, User as UserIcon, BookOpen, Link as LinkIcon, DollarSign, Building2, Mail } from "lucide-react";
 import SearchableSelect from "@/components/SearchableSelect";
 import { COUNTRIES } from "@/lib/countries";
 
-export default function ProfilePage() {
+function AdminProfileForm() {
+  const { user } = useAuth();
+  const [fullName, setFullName] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setFullName(user.name || "");
+      setOrganizationName(user.organizationName || "");
+      setContactEmail(user.contactEmail || user.email || "");
+    }
+  }, [user]);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    
+    setLoading(true);
+    setSuccess(false);
+    try {
+      await updateDoc(doc(db, "users", user.id), {
+        name: fullName,
+        organizationName,
+        contactEmail
+      });
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      console.error("Failed to update profile", err);
+      alert("Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
+          <Building2 className="h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Admin Profile</h1>
+          <p className="text-slate-500 text-sm">Update your organization details and contact information.</p>
+        </div>
+      </div>
+      
+      <form onSubmit={handleSave} className="space-y-8">
+        {success && (
+          <div className="p-4 bg-emerald-50 text-emerald-700 text-sm rounded-xl border border-emerald-100 font-medium animate-in fade-in zoom-in-95">
+            Admin profile updated successfully!
+          </div>
+        )}
+
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+          <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-4">
+            <UserIcon className="h-5 w-5 text-slate-400" />
+            <h2 className="text-lg font-bold text-slate-800">Organization Details</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Your Full Name</label>
+              <input
+                type="text"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                placeholder="Your Name"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Organization / Non-Profit Name</label>
+              <input
+                type="text"
+                required
+                value={organizationName}
+                onChange={(e) => setOrganizationName(e.target.value)}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                placeholder="e.g. The Scholarship Foundation"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Contact Email</label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <input
+                  type="email"
+                  required
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                  placeholder="contact@organization.org"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-2 flex justify-end">
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-md disabled:opacity-70"
+          >
+            {loading ? "Saving..." : (
+              <>
+                <Save className="h-5 w-5" />
+                Save Settings
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function StudentProfileForm() {
   const { user } = useAuth();
   
   const [fullName, setFullName] = useState("");
@@ -230,4 +354,10 @@ export default function ProfilePage() {
       </form>
     </div>
   );
+}
+
+export default function ProfilePage() {
+  const { user } = useAuth();
+  if (!user) return null;
+  return user.role === "admin" ? <AdminProfileForm /> : <StudentProfileForm />;
 }

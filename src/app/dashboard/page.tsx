@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, getCountFromServer, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Opportunity } from "@/types";
 import { generateMatches } from "@/app/actions/match";
@@ -23,6 +23,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeCoachOpp, setActiveCoachOpp] = useState<Opportunity | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [stats, setStats] = useState({ students: 0, opportunities: 0, tracked: 0 });
 
   const handleSave = async (oppId: string) => {
     if (!user) return;
@@ -56,7 +57,6 @@ export default function DashboardPage() {
         });
         setOpportunities(opps);
 
-        if (user?.role === "student" && opps.length > 0) {
           const matchResults = await generateMatches({
             educationLevel: user.educationLevel,
             financialNeed: user.financialNeed,
@@ -64,6 +64,26 @@ export default function DashboardPage() {
             countryOfResidence: user.countryOfResidence
           }, opps);
           setMatches(matchResults);
+        } else if (user?.role === "admin") {
+          try {
+            const studentsQuery = query(collection(db, "users"), where("role", "==", "student"));
+            const oppsQuery = collection(db, "opportunities");
+            const trackedQuery = collection(db, "saved_opportunities");
+            
+            const [studentsSnap, oppsSnap, trackedSnap] = await Promise.all([
+              getCountFromServer(studentsQuery),
+              getCountFromServer(oppsQuery),
+              getCountFromServer(trackedQuery)
+            ]);
+            
+            setStats({
+              students: studentsSnap.data().count,
+              opportunities: oppsSnap.data().count,
+              tracked: trackedSnap.data().count
+            });
+          } catch (e) {
+            console.error("Failed to fetch admin stats", e);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch opportunities:", err);
@@ -92,14 +112,31 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
+              <GraduationCap className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-500">Total Students</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.students}</p>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
               <Briefcase className="h-6 w-6" />
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">Active Opportunities</p>
-              <p className="text-2xl font-bold text-slate-900">{opportunities.length}</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.opportunities}</p>
             </div>
           </div>
-          {/* Add more admin stats here */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
+              <Bookmark className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-500">Applications Tracked</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.tracked}</p>
+            </div>
+          </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
