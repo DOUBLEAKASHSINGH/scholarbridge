@@ -1,6 +1,4 @@
-This is a great structure! To make it "copy-paste ready" for your GitHub README, I have cleaned it up, added the architecture diagram, and professionalized the tone.
 
----
 
 # ScholarBridge
 
