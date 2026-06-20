@@ -144,7 +144,7 @@ function StudentProfileForm() {
   const [sopUrl, setSopUrl] = useState("");
   const [financialNeed, setFinancialNeed] = useState("");
   const [genderIdentity, setGenderIdentity] = useState("");
-  const [specialDemographics, setSpecialDemographics] = useState("");
+  const [selectedDemographics, setSelectedDemographics] = useState<string[]>([]);
   
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -160,7 +160,13 @@ function StudentProfileForm() {
       setSopUrl(user.sopUrl || "");
       setFinancialNeed(user.financialNeed || "");
       setGenderIdentity(user.genderIdentity || "");
-      setSpecialDemographics(user.specialDemographics || "");
+      setSelectedDemographics(
+        Array.isArray(user.specialDemographics)
+          ? user.specialDemographics
+          : typeof user.specialDemographics === 'string' && user.specialDemographics.length > 0
+            ? user.specialDemographics.split(", ")
+            : []
+      );
     }
   }, [user]);
 
@@ -181,7 +187,7 @@ function StudentProfileForm() {
         sopUrl,
         financialNeed,
         genderIdentity,
-        specialDemographics
+        specialDemographics: selectedDemographics.join(", ")
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -274,22 +280,40 @@ function StudentProfileForm() {
               </select>
             </div>
             
-            <div className="space-y-2">
+            <div className="space-y-3">
               <label className="text-sm font-semibold text-slate-700">Special Demographics & Accessibility</label>
-              <select
-                value={specialDemographics}
-                onChange={(e) => setSpecialDemographics(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
-              >
-                <option value="">Select demographic...</option>
-                <option value="None">None</option>
-                <option value="First-Generation College Student">First-Generation College Student</option>
-                <option value="Physical Disability">Physical Disability</option>
-                <option value="Visually Impaired">Visually Impaired</option>
-                <option value="Hearing Impaired">Hearing Impaired</option>
-                <option value="Chronic Illness">Chronic Illness</option>
-                <option value="LGBTQ+">LGBTQ+</option>
-              </select>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "First-Generation College Student",
+                  "Physical Disability",
+                  "Visually Impaired",
+                  "Hearing Impaired",
+                  "Chronic Illness",
+                  "LGBTQ+"
+                ].map(option => {
+                  const isSelected = selectedDemographics.includes(option);
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          setSelectedDemographics(prev => prev.filter(d => d !== option));
+                        } else {
+                          setSelectedDemographics(prev => [...prev, option]);
+                        }
+                      }}
+                      className={`px-4 py-2 text-sm font-medium rounded-full transition-colors border ${
+                        isSelected 
+                          ? "bg-blue-600 text-white border-blue-600 shadow-sm" 
+                          : "bg-white text-slate-600 border-slate-300 hover:border-slate-400"
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

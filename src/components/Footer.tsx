@@ -19,7 +19,7 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-slate-900 mb-4">Company</h3>
             <ul className="space-y-3">
-              <li><Link href="https://github.com/DOUBLEAKASHSINGH/scholarbridge#readme" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">About Us</Link></li>
+              <li><Link href="/about" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">About Us</Link></li>
               <li><Link href="#" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">Timeline</Link></li>
               <li><Link href="#" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">News</Link></li>
             </ul>
@@ -29,8 +29,8 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-slate-900 mb-4">Resources</h3>
             <ul className="space-y-3">
-              <li><Link href="https://github.com/DOUBLEAKASHSINGH/scholarbridge#readme" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">Documentation</Link></li>
-              <li><a href="mailto:as3004399@gmail.com" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">Help Center</a></li>
+              <li><Link href="/docs" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">Documentation</Link></li>
+              <li><Link href="/help" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">Help Center</Link></li>
               <li><Link href="#" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>

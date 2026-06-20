@@ -94,7 +94,7 @@ export default function AdminDiscoverPage() {
               placeholder="e.g. Undergraduate scholarships for international students in Tech 2026..." 
               value={query}
               onChange={e => setQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white outline-none transition-all text-slate-900"
+              className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white outline-none transition-all text-gray-900 font-medium"
             />
           </div>
         </div>

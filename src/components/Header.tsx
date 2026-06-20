@@ -29,18 +29,21 @@ export default function Header() {
     router.push("/");
   };
 
-  const getGreeting = () => {
+  const [greeting, setGreeting] = useState("Hello");
+
+  useEffect(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
+    if (hour >= 5 && hour < 12) setGreeting("Good morning");
+    else if (hour >= 12 && hour < 17) setGreeting("Good afternoon");
+    else if (hour >= 17 && hour < 22) setGreeting("Good evening");
+    else setGreeting("Working late");
+  }, []);
 
   return (
     <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-10 shadow-sm">
       <div className="flex-1">
         <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-          {getGreeting()}, {user?.name}!
+          {greeting}, {user?.name}!
         </h2>
       </div>
       
