@@ -24,6 +24,7 @@ export default function DashboardPage() {
   const [activeCoachOpp, setActiveCoachOpp] = useState<Opportunity | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [stats, setStats] = useState({ students: 0, opportunities: 0, tracked: 0 });
+  const [visibleCount, setVisibleCount] = useState(5);
 
   const handleSave = async (oppId: string) => {
     if (!user) return;
@@ -147,7 +148,7 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="divide-y divide-slate-100">
-            {opportunities.slice(0, 5).map((opp) => (
+            {opportunities.slice(0, visibleCount).map((opp) => (
               <div key={opp.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
                 <div>
                   <h3 className="font-semibold text-slate-900">{opp.title}</h3>
@@ -162,6 +163,20 @@ export default function DashboardPage() {
               <div className="p-6 text-center text-slate-500">No opportunities posted yet.</div>
             )}
           </div>
+          {opportunities.length > 0 && (
+            <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-center">
+              {visibleCount < opportunities.length ? (
+                <button
+                  onClick={() => setVisibleCount(prev => prev + 5)}
+                  className="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+                >
+                  View More Opportunities
+                </button>
+              ) : (
+                <p className="text-sm text-slate-500 py-2">All opportunities loaded.</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );
