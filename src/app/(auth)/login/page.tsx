@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // Forgot password state
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
+  const [resetError, setResetError] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -26,6 +34,22 @@ export default function LoginPage() {
       setError(err.message || "Failed to login. Please check your credentials.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail) return;
+    setResetError("");
+    setResetMessage("");
+    setResetLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setResetMessage("Password reset email sent! Check your inbox.");
+    } catch (err: any) {
+      setResetError(err.message || "Failed to send reset email.");
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -89,7 +113,16 @@ export default function LoginPage() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700" htmlFor="password">Password</label>
+          <div className="flex justify-between items-center">
+            <label className="text-sm font-medium text-slate-700" htmlFor="password">Password</label>
+            <button 
+              type="button" 
+              onClick={() => setShowResetModal(true)}
+              className="text-sm font-medium text-blue-600 hover:underline"
+            >
+              Forgot password?
+            </button>
+          </div>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
               <Lock className="h-5 w-5" />
@@ -158,6 +191,57 @@ export default function LoginPage() {
           Sign up
         </Link>
       </p>
+
+      {/* Forgot Password Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-sm shadow-2xl zoom-in-95 animate-in duration-200">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Reset Password</h3>
+            <p className="text-sm text-slate-600 mb-4">Enter your email address and we'll send you a link to reset your password.</p>
+            
+            <form onSubmit={handleResetPassword}>
+              {resetError && <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100">{resetError}</div>}
+              {resetMessage && <div className="mb-4 p-3 bg-emerald-50 text-emerald-700 text-sm rounded-lg border border-emerald-100">{resetMessage}</div>}
+              
+              <div className="relative mb-6">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <input
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  required
+                  className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setShowResetModal(false);
+                    setResetMessage("");
+                    setResetError("");
+                    setResetEmail("");
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+                >
+                  Close
+                </button>
+                <button 
+                  type="submit"
+                  disabled={resetLoading || !resetEmail}
+                  className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {resetLoading ? "Sending..." : "Send Reset Link"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
