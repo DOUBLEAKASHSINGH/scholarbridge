@@ -6,7 +6,7 @@ import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Opportunity } from "@/types";
 import { generateMatches } from "@/app/actions/match";
-import { Sparkles, Briefcase, GraduationCap, ArrowRight, Bookmark, MessageCircle } from "lucide-react";
+import { Sparkles, Briefcase, GraduationCap, ArrowRight, Bookmark, MessageCircle, MapPin, Calendar, DollarSign } from "lucide-react";
 import Link from "next/link";
 import AICoach from "@/components/AICoach";
 import { doc, setDoc } from "firebase/firestore";
@@ -160,6 +160,19 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">{opp.title}</h3>
+                  
+                  <div className="flex flex-wrap items-center gap-4 mb-4 text-sm font-medium text-slate-500">
+                    {opp.location && (
+                      <div className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-slate-400" />{opp.location}</div>
+                    )}
+                    {opp.deadline && (
+                      <div className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-slate-400" />{new Date(opp.deadline).toLocaleDateString()}</div>
+                    )}
+                    {(opp.fundingAmount || opp.amount) && (
+                      <div className="flex items-center gap-1.5"><DollarSign className="h-4 w-4 text-green-500" />{opp.fundingAmount || opp.amount}</div>
+                    )}
+                  </div>
+                  
                   <p className="text-slate-600 mb-4 line-clamp-2">{opp.description}</p>
                   
                   <div className="flex items-center gap-2 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
@@ -168,23 +181,23 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-end gap-3 justify-center">
+                <div className="flex flex-col sm:flex-row lg:flex-col items-end gap-3 justify-center mt-4 sm:mt-0">
                   <button
                     onClick={() => setActiveCoachOpp(opp)}
-                    className="w-full flex items-center justify-center gap-2 text-sm font-medium text-indigo-600 bg-indigo-50 px-5 py-2 rounded-xl hover:bg-indigo-100 transition-colors border border-indigo-200"
+                    className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white bg-gradient-to-r from-purple-500 to-indigo-600 px-5 py-2.5 rounded-xl hover:from-purple-600 hover:to-indigo-700 transition-all shadow-md shadow-indigo-200"
                   >
                     Ask Coach <MessageCircle className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleSave(opp.id)}
                     disabled={savingId === opp.id}
-                    className="w-full flex items-center justify-center gap-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 px-5 py-2 rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 text-sm font-bold text-slate-700 bg-white border-2 border-slate-200 px-5 py-2.5 rounded-xl hover:border-slate-300 hover:bg-slate-50 transition-all disabled:opacity-50"
                   >
                     Save <Bookmark className="h-4 w-4" />
                   </button>
                   <Link 
                     href={`/dashboard/opportunities/${opp.id}`}
-                    className="w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-blue-600 px-5 py-2 rounded-xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
+                    className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white bg-blue-600 px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-200"
                   >
                     Details <ArrowRight className="h-4 w-4" />
                   </Link>

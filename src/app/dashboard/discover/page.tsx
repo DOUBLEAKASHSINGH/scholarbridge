@@ -193,7 +193,7 @@ export default function AdminDiscoverPage() {
           </h2>
           <div className="grid grid-cols-1 gap-6">
             {results.map((opp, index) => (
-              <div key={index} className="bg-white p-6 rounded-2xl border-2 border-indigo-50 shadow-sm flex flex-col lg:flex-row gap-6 hover:shadow-md transition-shadow">
+              <div key={index} className="bg-white p-6 rounded-2xl border-2 border-indigo-50 shadow-md hover:shadow-lg transition-shadow flex flex-col lg:flex-row gap-6">
                 <div className="flex-1 space-y-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
