@@ -253,7 +253,15 @@ export default function AdminDiscoverPage() {
             ))}
           </div>
         </div>
-      ) : null}
+      ) : (
+        <div className="py-20 flex flex-col items-center justify-center bg-slate-50 border border-slate-200 border-dashed rounded-2xl">
+          <Search className="h-10 w-10 text-slate-300 mb-4" />
+          <h3 className="text-lg font-bold text-slate-700">No opportunities discovered.</h3>
+          <p className="text-slate-500 text-sm mt-1 max-w-md text-center">
+            Check server logs to verify API connectivity, or try adjusting your search filters to be less restrictive.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

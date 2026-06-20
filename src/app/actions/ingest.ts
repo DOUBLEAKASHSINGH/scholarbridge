@@ -29,6 +29,8 @@ export async function searchAndStructureOpportunities(query: string, filters: Re
       console.warn("Tavily search failed, proceeding with empty results.", e);
     }
 
+    console.log("Raw Tavily Output:", searchResponse.results);
+
     // Step 2: Prepare the raw search data safely using optional chaining
     const rawSnippets = (searchResponse.results || []).map((r: any) => ({
       title: r?.title || "Unknown Title",
@@ -101,6 +103,7 @@ Ensure you only extract valid opportunities from the provided raw data. Do not h
       throw new Error("Failed to parse the structured data from AI.");
     }
 
+    console.log("Opportunities sent to frontend:", parsed.opportunities);
     return { success: true, data: parsed.opportunities || [] };
   } catch (error: any) {
     console.error("AI Ingestion Error:", error);

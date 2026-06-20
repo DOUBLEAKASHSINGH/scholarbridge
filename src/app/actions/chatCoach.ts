@@ -23,6 +23,8 @@ export async function chatWithCoach(
       The student's profile:
       ${userProfile}
       
+      CRITICAL RULE: If the student profile attributes say things like "NA", "ABC", "top 100 institute", or are missing/empty, treat them as MISSING. You must politely ask the student for their real academic details and goals first. Do NOT make assumptions and do NOT reference the placeholder text.
+      
       Your goal is to provide actionable advice, review essay ideas, and answer questions about this specific opportunity.
       Keep your answers concise, encouraging, and highly specific to the provided opportunity context.
     `;
