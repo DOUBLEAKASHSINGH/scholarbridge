@@ -37,9 +37,12 @@ export async function chatWithCoach(
       { role: "user", parts: [{ text: newMessage }] }
     ];
 
+    if (formattedMessages.length > 0) {
+      formattedMessages[0].parts[0].text = systemPrompt + "\n\n" + formattedMessages[0].parts[0].text;
+    }
+
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-pro",
-      systemInstruction: systemPrompt
+      model: "gemini-pro"
     });
 
     const result = await model.generateContent({

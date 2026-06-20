@@ -46,21 +46,24 @@ export async function generateMatches(
       Return ONLY valid JSON.
     `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
-        responseMimeType: "application/json"
+        temperature: 0.1
       }
     });
 
-    const responseContent = result.response.text() || '{"matches": []}';
-    let parsed;
+    let content = result.response.text();
+    if (!content) return [];
+    
+    content = content.replace(/```json/g, "").replace(/```/g, "").trim();
+
     try {
-      parsed = JSON.parse(responseContent);
+      const parsed = JSON.parse(content);
       return parsed.matches || [];
     } catch (e) {
-      console.error("Failed to parse Gemini response", e);
+      console.error("Match JSON parse error", e, content);
       return [];
     }
   } catch (error) {

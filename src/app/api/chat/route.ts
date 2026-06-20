@@ -31,9 +31,14 @@ export async function POST(req: NextRequest) {
       parts: [{ text: m.content }]
     }));
 
+    if (formattedMessages.length > 0) {
+      formattedMessages[0].parts[0].text = systemPrompt + "\n\n" + formattedMessages[0].parts[0].text;
+    } else {
+      formattedMessages.push({ role: "user", parts: [{ text: systemPrompt }] });
+    }
+
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-pro",
-      systemInstruction: systemPrompt
+      model: "gemini-pro"
     });
 
     const result = await model.generateContent({
