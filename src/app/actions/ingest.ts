@@ -75,8 +75,8 @@ Ensure you only extract valid opportunities from the provided raw data. Do not h
 
     const combinedPrompt = systemPrompt + "\n\n" + userPrompt;
 
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-pro"
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash"
     });
 
     const result = await model.generateContent({
@@ -100,7 +100,7 @@ Ensure you only extract valid opportunities from the provided raw data. Do not h
       console.error("JSON Parse Error:", parseError, content);
       throw new Error("Failed to parse the structured data from AI.");
     }
-    
+
     return { success: true, data: parsed.opportunities || [] };
   } catch (error: any) {
     console.error("AI Ingestion Error:", error);

@@ -6,11 +6,11 @@ import { Opportunity } from "@/types";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
 
 export async function generateMatches(
-  userProfile: { 
-    educationLevel?: string; 
-    financialNeed?: string; 
-    fieldOfStudy?: string; 
-    countryOfResidence?: string; 
+  userProfile: {
+    educationLevel?: string;
+    financialNeed?: string;
+    fieldOfStudy?: string;
+    countryOfResidence?: string;
   },
   opportunities: Opportunity[]
 ) {
@@ -32,13 +32,13 @@ export async function generateMatches(
       Financial Need: ${userProfile.financialNeed || "Not specified"}
       
       Here is a list of active opportunities (JSON):
-      ${JSON.stringify(opportunities.map(o => ({ 
-        id: o.id, 
-        title: o.title, 
-        type: o.type, 
-        eligibility: o.eligibility,
-        targetCountry: o.targetCountry 
-      })))}
+      ${JSON.stringify(opportunities.map(o => ({
+      id: o.id,
+      title: o.title,
+      type: o.type,
+      eligibility: o.eligibility,
+      targetCountry: o.targetCountry
+    })))}
       
       Evaluate the student's profile against these opportunities and pick the top 5 matches.
       Return a JSON object with a "matches" array containing exactly those 5 matches.
@@ -46,7 +46,7 @@ export async function generateMatches(
       Return ONLY valid JSON.
     `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
@@ -56,7 +56,7 @@ export async function generateMatches(
 
     let content = result.response.text();
     if (!content) return [];
-    
+
     content = content.replace(/```json/g, "").replace(/```/g, "").trim();
 
     try {
