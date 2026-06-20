@@ -91,9 +91,6 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-100 py-12 text-center text-slate-500">
-        <p>© {new Date().getFullYear()} ScholarBridge. All rights reserved.</p>
-      </footer>
     </div>
   );
 }

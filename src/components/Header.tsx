@@ -40,7 +40,7 @@ export default function Header() {
     <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-10 shadow-sm">
       <div className="flex-1">
         <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-          {getGreeting()}, {user?.name?.split(' ')[0]}!
+          {getGreeting()}, {user?.name}!
         </h2>
       </div>
       

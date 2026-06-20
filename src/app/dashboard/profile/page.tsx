@@ -276,13 +276,20 @@ function StudentProfileForm() {
             
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Special Demographics & Accessibility</label>
-              <input
-                type="text"
+              <select
                 value={specialDemographics}
                 onChange={(e) => setSpecialDemographics(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
-                placeholder="e.g. First-Gen, Physical Disability"
-              />
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
+              >
+                <option value="">Select demographic...</option>
+                <option value="None">None</option>
+                <option value="First-Generation College Student">First-Generation College Student</option>
+                <option value="Physical Disability">Physical Disability</option>
+                <option value="Visually Impaired">Visually Impaired</option>
+                <option value="Hearing Impaired">Hearing Impaired</option>
+                <option value="Chronic Illness">Chronic Illness</option>
+                <option value="LGBTQ+">LGBTQ+</option>
+              </select>
             </div>
           </div>
         </div>
