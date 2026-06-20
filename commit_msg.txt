@@ -1,9 +1,5 @@
-Implement Phase 6: AI Web Discovery & Dashboard Fixes
+Upgrade AI Ingestion Engine with live Tavily internet search
 
-- Added OpenAI-powered `ingest.ts` Server Action to generate/fetch highly structured real-world opportunities based on admin queries and filters.
-- Built `/dashboard/discover` Admin workspace to scan the web, review AI results, and import directly into Firestore.
-- Built `/dashboard/explore` Student page with an advanced multi-filter sidebar (Degree, Location, Funding) and client-side real-time keyword search.
-- Built `/dashboard/saved` Student page to review bookmarked opportunities, resolving previous 404 error.
-- Implemented `/admin/login` for dedicated, secure admin access.
-- Fixed the unresponsive notification bell in the Header by adding a dropdown popover state.
-- Expanded the `Opportunity` TypeScript interface to support the new rich AI metadata (fundingAmount, eligibilityObject, location).
+- Installed `@tavily/core` SDK.
+- Added TAVILY_API_KEY to local environment.
+- Rewrote `searchAndStructureOpportunities` server action to perform a live internet search using Tavily first, and then pipe the raw snippet and URL data into OpenAI's gpt-4o model for strict JSON formatting and data extraction based on the predefined opportunity schema.
