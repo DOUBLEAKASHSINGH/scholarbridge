@@ -7,29 +7,56 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function searchAndStructureOpportunities(query: string, filters: Record<string, string>) {
   try {
-    if (!process.env.GEMINI_API_KEY) {
+    // 1. Check the Input Query safely
+    const safeQuery = typeof query === "string" && query.trim().length > 0 ? query.trim() : "scholarships and grants";
+
+    // 2. Check the API Keys safely
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (!geminiKey || typeof geminiKey !== "string" || geminiKey.trim() === "") {
       throw new Error("Missing GEMINI_API_KEY environment variable.");
     }
-    if (!process.env.TAVILY_API_KEY) {
+    
+    // Simulate a safe split check just in case the user's infrastructure does something weird
+    const keyParts = geminiKey.split("-");
+    if (keyParts.length === 0) {
+      throw new Error("Invalid GEMINI_API_KEY format.");
+    }
+
+    const tavilyKey = process.env.TAVILY_API_KEY;
+    if (!tavilyKey || typeof tavilyKey !== "string" || tavilyKey.trim() === "") {
       throw new Error("Missing TAVILY_API_KEY environment variable.");
     }
 
     // Step 1: Initialize Tavily and perform live internet search
-    const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
-    const searchResponse = await tvly.search(query, {
+    const tvly = tavily({ apiKey: tavilyKey });
+    const searchResponse = await tvly.search(safeQuery, {
       searchDepth: "advanced",
       maxResults: 8
     });
 
-    // Step 2: Prepare the raw search data for OpenAI
-    const rawSnippets = searchResponse.results.map((r: any) => ({
-      title: r.title,
-      url: r.url,
-      content: r.content
-    }));
+    // 3. Safeguard the API Response Processing
+    const safeResults = Array.isArray(searchResponse?.results) ? searchResponse.results : [];
+    
+    const rawSnippets = safeResults.map((r: any) => {
+      // Safely access properties and provide fallbacks before any string operations
+      const safeTitle = typeof r?.title === "string" ? r.title : "Unknown Title";
+      const safeUrl = typeof r?.url === "string" ? r.url : "";
+      const safeContent = typeof r?.content === "string" ? r.content : "";
+      
+      // Optional chaining example as requested by the user
+      const urlSegments = safeUrl?.split('/') || [];
+      
+      return {
+        title: safeTitle,
+        url: safeUrl,
+        content: safeContent,
+        domain: urlSegments.length > 2 ? urlSegments[2] : "Unknown Domain"
+      };
+    });
 
-    const filterString = Object.entries(filters)
-      .map(([key, val]) => `${key}: ${val}`)
+    const safeFilters = filters || {};
+    const filterString = Object.entries(safeFilters)
+      .map(([key, val]) => `${key}: ${String(val)}`)
       .join(", ");
 
     // Step 3: Pass raw data to Gemini for strict structuring
