@@ -76,7 +76,7 @@ Ensure you only extract valid opportunities from the provided raw data. Do not h
     const combinedPrompt = systemPrompt + "\n\n" + userPrompt;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash"
+      model: "gemini-2.0-flash"
     });
 
     const result = await model.generateContent({
