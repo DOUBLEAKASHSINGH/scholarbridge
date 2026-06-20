@@ -20,7 +20,7 @@ export default function Sidebar() {
   const studentLinks = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Discover", href: "/dashboard/explore", icon: Search },
-    { name: "My Tracker", href: "/dashboard/saved", icon: BookmarkCheck },
+    { name: "My Tracker", href: "/dashboard/tracker", icon: BookmarkCheck },
     { name: "Profile", href: "/dashboard/profile", icon: GraduationCap },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];

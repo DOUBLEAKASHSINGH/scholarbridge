@@ -7,8 +7,11 @@ export interface User {
   role: UserRole;
   educationLevel?: string;
   fieldOfStudy?: string;
+  institute?: string;
   countryOfResidence?: string;
   financialNeed?: string;
+  resumeUrl?: string;
+  sopUrl?: string;
   createdAt: number;
 }
 
@@ -40,7 +43,7 @@ export interface Opportunity {
   createdAt: number;
 }
 
-export type SavedOpportunityStatus = 'Saved' | 'Applied';
+export type SavedOpportunityStatus = 'Saved' | 'Drafting Application' | 'Applied' | 'Result Pending';
 
 export interface SavedOpportunity {
   id: string;
