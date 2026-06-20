@@ -11,6 +11,8 @@ export interface User {
   institute?: string;
   countryOfResidence?: string;
   financialNeed?: string;
+  genderIdentity?: string;
+  specialDemographics?: string;
   resumeUrl?: string;
   sopUrl?: string;
   // Admin Fields

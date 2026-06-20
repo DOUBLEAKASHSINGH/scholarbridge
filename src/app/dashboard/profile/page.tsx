@@ -143,6 +143,8 @@ function StudentProfileForm() {
   const [resumeUrl, setResumeUrl] = useState("");
   const [sopUrl, setSopUrl] = useState("");
   const [financialNeed, setFinancialNeed] = useState("");
+  const [genderIdentity, setGenderIdentity] = useState("");
+  const [specialDemographics, setSpecialDemographics] = useState("");
   
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -157,6 +159,8 @@ function StudentProfileForm() {
       setResumeUrl(user.resumeUrl || "");
       setSopUrl(user.sopUrl || "");
       setFinancialNeed(user.financialNeed || "");
+      setGenderIdentity(user.genderIdentity || "");
+      setSpecialDemographics(user.specialDemographics || "");
     }
   }, [user]);
 
@@ -175,7 +179,9 @@ function StudentProfileForm() {
         institute,
         resumeUrl,
         sopUrl,
-        financialNeed
+        financialNeed,
+        genderIdentity,
+        specialDemographics
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -241,6 +247,41 @@ function StudentProfileForm() {
                 onChange={setCountryOfResidence}
                 options={COUNTRIES}
                 placeholder="Search Country..."
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+          <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-4">
+            <UserIcon className="h-5 w-5 text-slate-400" />
+            <h2 className="text-lg font-bold text-slate-800">Demographics & Needs</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Gender Identity</label>
+              <select
+                required
+                value={genderIdentity}
+                onChange={(e) => setGenderIdentity(e.target.value)}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
+              >
+                <option value="">Select Gender...</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Non-Binary">Non-Binary</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Special Demographics & Accessibility</label>
+              <input
+                type="text"
+                value={specialDemographics}
+                onChange={(e) => setSpecialDemographics(e.target.value)}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
+                placeholder="e.g. First-Gen, Physical Disability"
               />
             </div>
           </div>

@@ -18,6 +18,8 @@ export default function OnboardingPage() {
   const [fieldOfStudy, setFieldOfStudy] = useState("");
   const [countryOfResidence, setCountryOfResidence] = useState("");
   const [financialNeed, setFinancialNeed] = useState("");
+  const [genderIdentity, setGenderIdentity] = useState("");
+  const [specialDemographics, setSpecialDemographics] = useState("");
   
   const [submitting, setSubmitting] = useState(false);
 
@@ -30,6 +32,8 @@ export default function OnboardingPage() {
       setFieldOfStudy(user.fieldOfStudy || "");
       setCountryOfResidence(user.countryOfResidence || "");
       setFinancialNeed(user.financialNeed || "");
+      setGenderIdentity(user.genderIdentity || "");
+      setSpecialDemographics(user.specialDemographics || "");
     }
   }, [user, authLoading, router]);
 
@@ -44,7 +48,9 @@ export default function OnboardingPage() {
         educationLevel,
         fieldOfStudy,
         countryOfResidence,
-        financialNeed
+        financialNeed,
+        genderIdentity,
+        specialDemographics
       });
       router.push("/dashboard");
     } catch (err) {
@@ -124,9 +130,38 @@ export default function OnboardingPage() {
               required
               value={fieldOfStudy}
               onChange={(e) => setFieldOfStudy(e.target.value)}
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
               placeholder="e.g. Computer Science, Medicine"
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Gender Identity</label>
+              <select
+                required
+                value={genderIdentity}
+                onChange={(e) => setGenderIdentity(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+              >
+                <option value="">Select Gender...</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Non-Binary">Non-Binary</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Special Demographics & Needs (Optional)</label>
+              <input
+                type="text"
+                value={specialDemographics}
+                onChange={(e) => setSpecialDemographics(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+                placeholder="e.g. First-Gen, Physical Disability"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
