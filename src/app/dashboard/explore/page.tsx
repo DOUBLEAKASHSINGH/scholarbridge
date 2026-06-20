@@ -16,6 +16,7 @@ export default function ExplorePage() {
   const [selectedDegrees, setSelectedDegrees] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedFunding, setSelectedFunding] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchOpps = async () => {
@@ -53,12 +54,20 @@ export default function ExplorePage() {
       // Location match
       const matchesLocation = selectedLocations.length === 0 || (opp.location && selectedLocations.includes(opp.location));
 
-      // Funding type / Opportunity Type match
-      const matchesType = selectedTypes.length === 0 || selectedTypes.includes(opp.type);
+      // Opportunity Type match (case-insensitive)
+      const matchesType = selectedTypes.length === 0 || selectedTypes.some(t => t.toLowerCase() === (opp.type || "").toLowerCase());
 
-      return matchesQuery && matchesDegree && matchesLocation && matchesType;
+      // Real Funding Match
+      const matchesFunding = selectedFunding.length === 0 || selectedFunding.some(f => {
+        const amt = (opp.fundingAmount || opp.amount || "").toLowerCase();
+        if (f === "Paid / Stipend") return amt && amt !== "unspecified" && !amt.includes("unpaid") && amt !== "none";
+        if (f === "Unpaid") return !amt || amt === "unspecified" || amt.includes("unpaid") || amt === "none";
+        return false;
+      });
+
+      return matchesQuery && matchesDegree && matchesLocation && matchesType && matchesFunding;
     });
-  }, [opportunities, searchQuery, selectedDegrees, selectedLocations, selectedTypes]);
+  }, [opportunities, searchQuery, selectedDegrees, selectedLocations, selectedTypes, selectedFunding]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">
@@ -105,9 +114,9 @@ export default function ExplorePage() {
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Funding Type</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Opportunity Type</h3>
               <div className="space-y-2">
-                {["scholarship", "grant", "internship"].map(type => (
+                {["Scholarship", "Grant", "Internship", "Job"].map(type => (
                   <label key={type} className="flex items-center gap-2 cursor-pointer group">
                     <input 
                       type="checkbox" 
@@ -116,6 +125,23 @@ export default function ExplorePage() {
                       className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" 
                     />
                     <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors capitalize">{type}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Funding</h3>
+              <div className="space-y-2">
+                {["Paid / Stipend", "Unpaid"].map(fund => (
+                  <label key={fund} className="flex items-center gap-2 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      checked={selectedFunding.includes(fund)}
+                      onChange={() => toggleFilter(setSelectedFunding, fund)}
+                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" 
+                    />
+                    <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">{fund}</span>
                   </label>
                 ))}
               </div>
