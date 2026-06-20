@@ -60,7 +60,7 @@ export default function ProfilePage() {
           <select
             value={educationLevel}
             onChange={(e) => setEducationLevel(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           >
             <option value="">Select your level</option>
             <option value="High School">High School</option>
@@ -75,7 +75,7 @@ export default function ProfilePage() {
           <textarea
             value={financialNeed}
             onChange={(e) => setFinancialNeed(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-24"
+            className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-24"
             placeholder="Briefly describe your financial situation or constraints to help AI match you with appropriate grants or need-based scholarships."
           ></textarea>
         </div>

@@ -1,10 +1,5 @@
-Phase 5: The Coach Chatbot & Saving implemented
+UI Polish: Improved Input Text Visibility
 
-Breakdown of Progress:
-Step 6: AI Chat & Save Functionality
-- Added a "Save" button to the opportunity cards that writes a record directly to the saved_opportunities collection in Firestore.
-- Added an "Ask Coach" button on the cards that triggers a slide-over panel.
-- Refactored the AICoach component into an interactive modal interface.
-- Created the /app/api/chat/route.ts API route to securely handle OpenAI chat completions.
-- Engineered the chat system prompt to include the Student Profile data and specific Opportunity context, instructing the AI to act as an encouraging academic advisor.
-- Fully hooked up the Chat UI to the API route for a seamless back-and-forth conversation.
+- Globally updated all form inputs, textareas, and select elements across the application (Login, Signup, Onboarding, Admin pages).
+- Enforced `text-slate-900` to ensure user-typed text is clearly visible and dark, fixing the issue where text blended into the input backgrounds.
+- Added `placeholder:text-slate-400` so placeholder text remains distinct from the user's typed input.

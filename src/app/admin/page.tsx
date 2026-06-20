@@ -97,7 +97,7 @@ export default function AdminDashboardPage() {
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 placeholder="Opportunity Title"
               />
             </div>
@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as OpportunityType)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
               >
                 <option value="scholarship">Scholarship</option>
                 <option value="internship">Internship</option>
@@ -121,7 +121,7 @@ export default function AdminDashboardPage() {
                 type="text"
                 value={targetCountry}
                 onChange={(e) => setTargetCountry(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 placeholder="e.g. United States, Global"
               />
             </div>
@@ -133,7 +133,7 @@ export default function AdminDashboardPage() {
                 required
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
               />
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function AdminDashboardPage() {
               required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-24 transition-all"
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-24 transition-all"
               placeholder="Detailed description of the opportunity..."
             ></textarea>
           </div>
@@ -155,7 +155,7 @@ export default function AdminDashboardPage() {
               required
               value={eligibility}
               onChange={(e) => setEligibility(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-24 transition-all"
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-24 transition-all"
               placeholder="Who is eligible to apply?"
             ></textarea>
           </div>

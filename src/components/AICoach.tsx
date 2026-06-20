@@ -123,7 +123,7 @@ export default function AICoach({ opportunity, user, onClose }: AICoachProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask a question..."
-            className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-all"
+            className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-all"
           />
           <button
             type="submit"

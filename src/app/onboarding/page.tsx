@@ -82,7 +82,7 @@ export default function OnboardingPage() {
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
               placeholder="John Doe"
             />
           </div>
@@ -94,7 +94,7 @@ export default function OnboardingPage() {
                 required
                 value={educationLevel}
                 onChange={(e) => setEducationLevel(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
               >
                 <option value="">Select Level...</option>
                 <option value="High School">High School</option>
@@ -111,7 +111,7 @@ export default function OnboardingPage() {
                 required
                 value={countryOfResidence}
                 onChange={(e) => setCountryOfResidence(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
                 placeholder="e.g. United States"
               />
             </div>
@@ -124,7 +124,7 @@ export default function OnboardingPage() {
               required
               value={fieldOfStudy}
               onChange={(e) => setFieldOfStudy(e.target.value)}
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
               placeholder="e.g. Computer Science, Medicine"
             />
           </div>
@@ -135,7 +135,7 @@ export default function OnboardingPage() {
               required
               value={financialNeed}
               onChange={(e) => setFinancialNeed(e.target.value)}
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all h-32 bg-slate-50 focus:bg-white"
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all h-32 bg-slate-50 focus:bg-white"
               placeholder="Briefly describe your financial situation or background to help us match you with need-based scholarships or grants..."
             ></textarea>
             <p className="text-xs text-slate-500 mt-1">This information is securely stored and only used for AI matching.</p>

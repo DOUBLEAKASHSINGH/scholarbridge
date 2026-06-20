@@ -56,7 +56,7 @@ export default function NewOpportunityPage() {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="e.g. Google Women in Tech Scholarship"
             />
           </div>
@@ -68,7 +68,7 @@ export default function NewOpportunityPage() {
               required
               value={provider}
               onChange={(e) => setProvider(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="e.g. Google"
             />
           </div>
@@ -78,7 +78,7 @@ export default function NewOpportunityPage() {
             <select
               value={type}
               onChange={(e) => setType(e.target.value as OpportunityType)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
             >
               <option value="scholarship">Scholarship</option>
               <option value="internship">Internship</option>
@@ -93,7 +93,7 @@ export default function NewOpportunityPage() {
               required
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
             />
           </div>
 
@@ -103,7 +103,7 @@ export default function NewOpportunityPage() {
               type="text"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="e.g. $5,000"
             />
           </div>
@@ -115,7 +115,7 @@ export default function NewOpportunityPage() {
             required
             value={eligibility}
             onChange={(e) => setEligibility(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-24"
+            className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-24"
             placeholder="e.g. Must be a full-time student majoring in Computer Science."
           ></textarea>
         </div>
@@ -126,7 +126,7 @@ export default function NewOpportunityPage() {
             required
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-32"
+            className="w-full px-4 py-2 border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-32"
             placeholder="Describe the opportunity in detail..."
           ></textarea>
         </div>
