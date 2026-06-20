@@ -94,7 +94,7 @@ export default function AdminDiscoverPage() {
               placeholder="e.g. Undergraduate scholarships for international students in Tech 2026..." 
               value={query}
               onChange={e => setQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-xl shadow-sm outline-none transition-all text-black font-semibold focus:text-black focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400 placeholder:font-normal bg-white border border-slate-300"
+              className="w-full pl-12 pr-4 py-3 rounded-xl shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-500 bg-white border border-slate-300 !text-slate-900 !font-semibold placeholder:!text-slate-500"
             />
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function AdminDiscoverPage() {
             <select 
               value={filters.category}
               onChange={e => setFilters({...filters, category: e.target.value})}
-              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 !text-slate-900 !font-semibold"
             >
               <option value="All">All Categories</option>
               <option value="Scholarship">Scholarship</option>
@@ -118,7 +118,7 @@ export default function AdminDiscoverPage() {
             <select 
               value={filters.degree}
               onChange={e => setFilters({...filters, degree: e.target.value})}
-              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 !text-slate-900 !font-semibold"
             >
               <option value="All">All Degrees</option>
               <option value="High School">High School</option>
@@ -132,7 +132,7 @@ export default function AdminDiscoverPage() {
             <select 
               value={filters.funding}
               onChange={e => setFilters({...filters, funding: e.target.value})}
-              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 !text-slate-900 !font-semibold"
             >
               <option value="All">All Funding</option>
               <option value="Fully Funded">Fully Funded</option>
@@ -146,7 +146,7 @@ export default function AdminDiscoverPage() {
             <select 
               value={filters.geography}
               onChange={e => setFilters({...filters, geography: e.target.value})}
-              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 !text-slate-900 !font-semibold"
             >
               <option value="All">Global</option>
               <option value="Local (Domestic)">Local (Domestic)</option>
