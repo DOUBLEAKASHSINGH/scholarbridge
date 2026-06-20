@@ -81,9 +81,9 @@ Ensure you only extract valid opportunities from the provided raw data. Do not h
     }
 
     const parsed = JSON.parse(content);
-    return parsed.opportunities || [];
+    return { success: true, data: parsed.opportunities || [] };
   } catch (error: any) {
     console.error("AI Ingestion Error:", error);
-    throw new Error(error.message || "Failed to scan the web");
+    return { success: false, message: error.message || "An unexpected error occurred while scanning the web." };
   }
 }

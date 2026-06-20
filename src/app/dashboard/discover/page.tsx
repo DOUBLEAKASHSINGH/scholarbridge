@@ -18,16 +18,22 @@ export default function AdminDiscoverPage() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [importingId, setImportingId] = useState<number | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSearch = async () => {
     if (!query.trim()) return;
     setLoading(true);
+    setErrorMsg("");
     try {
-      const data = await searchAndStructureOpportunities(query, filters);
-      setResults(data);
+      const response = await searchAndStructureOpportunities(query, filters);
+      if (response.success) {
+        setResults(response.data);
+      } else {
+        setErrorMsg(response.message || "Failed to scan the web.");
+      }
     } catch (err: any) {
       console.error(err);
-      alert(`Failed to scan the web: ${err.message || "Unknown error"}`);
+      setErrorMsg("An unexpected client error occurred.");
     } finally {
       setLoading(false);
     }
@@ -149,11 +155,19 @@ export default function AdminDiscoverPage() {
           </div>
         </div>
 
-        <div className="pt-4 border-t border-slate-100 flex justify-end">
+        <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex-1 w-full">
+            {errorMsg && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 animate-in fade-in">
+                <XCircle className="h-4 w-4" />
+                {errorMsg}
+              </div>
+            )}
+          </div>
           <button 
             onClick={handleSearch}
             disabled={loading || !query.trim()}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-xl transition-all disabled:opacity-70 shadow-md shadow-indigo-200"
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-xl transition-all disabled:opacity-70 shadow-md shadow-indigo-200 whitespace-nowrap"
           >
             {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
             Scan the Web
