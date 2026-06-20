@@ -1,11 +1,9 @@
 "use server";
 
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Opportunity } from "@/types";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "dummy_key",
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
 
 export async function generateMatches(
   userProfile: { 
@@ -16,7 +14,7 @@ export async function generateMatches(
   },
   opportunities: Opportunity[]
 ) {
-  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "dummy_key") {
+  if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "dummy_key" || process.env.GEMINI_API_KEY === "dummy_gemini_key") {
     // Return dummy data if no key is provided
     return opportunities.slice(0, 5).map((opp) => ({
       opportunityId: opp.id,
@@ -48,23 +46,25 @@ export async function generateMatches(
       Return ONLY valid JSON.
     `;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json"
+      }
     });
 
-    const responseContent = response.choices[0].message.content || '{"matches": []}';
+    const responseContent = result.response.text() || '{"matches": []}';
     let parsed;
     try {
       parsed = JSON.parse(responseContent);
       return parsed.matches || [];
     } catch (e) {
-      console.error("Failed to parse OpenAI response", e);
+      console.error("Failed to parse Gemini response", e);
       return [];
     }
   } catch (error) {
-    console.error("OpenAI API error:", error);
+    console.error("Gemini API error:", error);
     return [];
   }
 }
