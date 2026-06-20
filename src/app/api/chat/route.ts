@@ -31,14 +31,9 @@ export async function POST(req: NextRequest) {
       parts: [{ text: m.content }]
     }));
 
-    if (formattedMessages.length > 0) {
-      formattedMessages[0].parts[0].text = systemPrompt + "\n\n" + formattedMessages[0].parts[0].text;
-    } else {
-      formattedMessages.push({ role: "user", parts: [{ text: systemPrompt }] });
-    }
-
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro"
+      model: "gemini-1.5-flash",
+      systemInstruction: systemPrompt
     });
 
     const result = await model.generateContent({
@@ -48,10 +43,10 @@ export async function POST(req: NextRequest) {
     const reply = result.response.text() || "I couldn't generate a response.";
     
     return NextResponse.json({ reply });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini API error:", error);
     return NextResponse.json(
-      { error: "Failed to communicate with AI Coach" },
+      { error: error?.message || "Failed to communicate with AI Coach" },
       { status: 500 }
     );
   }
