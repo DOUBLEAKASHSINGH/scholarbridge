@@ -47,7 +47,7 @@ export default function AICoach({ opportunity, user, onClose }: AICoachProps) {
         body: JSON.stringify({
           opportunityContext: oppContext,
           userProfile: userContext,
-          messages: messages.slice(1) // exclude the initial hardcoded greeting if you want, but passing it is fine too. Let's pass the real history
+          messages: newMessages.slice(1) // exclude the initial hardcoded greeting
         }),
       });
 

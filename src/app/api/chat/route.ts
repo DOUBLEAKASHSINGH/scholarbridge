@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "dummy_key",
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { opportunityContext, userProfile, messages } = body;
 
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "dummy_key") {
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "dummy_gemini_key" || process.env.GEMINI_API_KEY === "dummy_key") {
       return NextResponse.json({ 
-        reply: "This is a simulated AI response. Please add an OpenAI API key to enable the real AI Coach." 
+        reply: "This is a simulated AI response. Please add a GEMINI_API_KEY to enable the real AI Coach." 
       });
     }
 
@@ -28,21 +26,25 @@ export async function POST(req: NextRequest) {
       Keep your answers concise, encouraging, and highly specific to the provided opportunity context.
     `;
 
-    const chatMessages = [
-      { role: "system", content: systemPrompt },
-      ...messages
-    ];
+    const formattedMessages = messages.map((m: any) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }]
+    }));
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: chatMessages,
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: systemPrompt
     });
 
-    const reply = response.choices[0].message.content || "I couldn't generate a response.";
+    const result = await model.generateContent({
+      contents: formattedMessages
+    });
+
+    const reply = result.response.text() || "I couldn't generate a response.";
     
     return NextResponse.json({ reply });
   } catch (error) {
-    console.error("OpenAI API error:", error);
+    console.error("Gemini API error:", error);
     return NextResponse.json(
       { error: "Failed to communicate with AI Coach" },
       { status: 500 }
