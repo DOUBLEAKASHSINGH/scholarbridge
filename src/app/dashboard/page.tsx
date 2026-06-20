@@ -6,8 +6,10 @@ import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Opportunity } from "@/types";
 import { generateMatches } from "@/app/actions/match";
-import { Sparkles, Briefcase, GraduationCap, ArrowRight } from "lucide-react";
+import { Sparkles, Briefcase, GraduationCap, ArrowRight, Bookmark, MessageCircle } from "lucide-react";
 import Link from "next/link";
+import AICoach from "@/components/AICoach";
+import { doc, setDoc } from "firebase/firestore";
 
 interface MatchResult {
   opportunityId: string;
@@ -19,6 +21,29 @@ export default function DashboardPage() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [matches, setMatches] = useState<MatchResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeCoachOpp, setActiveCoachOpp] = useState<Opportunity | null>(null);
+  const [savingId, setSavingId] = useState<string | null>(null);
+
+  const handleSave = async (oppId: string) => {
+    if (!user) return;
+    setSavingId(oppId);
+    try {
+      const savedRef = doc(db, "saved_opportunities", `${user.id}_${oppId}`);
+      await setDoc(savedRef, {
+        id: savedRef.id,
+        userId: user.id,
+        opportunityId: oppId,
+        status: "Saved",
+        savedAt: Date.now()
+      });
+      alert("Opportunity saved successfully!");
+    } catch (err) {
+      console.error("Failed to save", err);
+      alert("Failed to save opportunity.");
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -143,12 +168,25 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-end gap-4 justify-center">
+                <div className="flex flex-col items-end gap-3 justify-center">
+                  <button
+                    onClick={() => setActiveCoachOpp(opp)}
+                    className="w-full flex items-center justify-center gap-2 text-sm font-medium text-indigo-600 bg-indigo-50 px-5 py-2 rounded-xl hover:bg-indigo-100 transition-colors border border-indigo-200"
+                  >
+                    Ask Coach <MessageCircle className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleSave(opp.id)}
+                    disabled={savingId === opp.id}
+                    className="w-full flex items-center justify-center gap-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 px-5 py-2 rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-50"
+                  >
+                    Save <Bookmark className="h-4 w-4" />
+                  </button>
                   <Link 
                     href={`/dashboard/opportunities/${opp.id}`}
-                    className="flex items-center gap-2 text-sm font-medium text-white bg-blue-600 px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
+                    className="w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-blue-600 px-5 py-2 rounded-xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
                   >
-                    View Details <ArrowRight className="h-4 w-4" />
+                    Details <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
               </div>
@@ -170,6 +208,18 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      {activeCoachOpp && user && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/20 backdrop-blur-sm">
+          <div className="w-full max-w-md h-full bg-white shadow-2xl animate-in slide-in-from-right">
+            <AICoach 
+              opportunity={activeCoachOpp} 
+              user={user} 
+              onClose={() => setActiveCoachOpp(null)} 
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

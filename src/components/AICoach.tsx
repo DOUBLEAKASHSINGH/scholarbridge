@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, User } from "lucide-react";
-import { chatWithCoach } from "@/app/actions/chatCoach";
+import { Send, Bot, User, X } from "lucide-react";
 import { Opportunity, User as AppUser } from "@/types";
 
 interface AICoachProps {
   opportunity: Opportunity;
   user: AppUser;
+  onClose?: () => void;
 }
 
-export default function AICoach({ opportunity, user }: AICoachProps) {
+export default function AICoach({ opportunity, user, onClose }: AICoachProps) {
   const [messages, setMessages] = useState<{ role: "user" | "assistant", content: string }[]>([
     { role: "assistant", content: `Hi ${user.name.split(' ')[0]}! I'm your AI Coach. I can help you tailor your application for the ${opportunity.title}. What would you like to know?` }
   ]);
@@ -41,9 +41,20 @@ export default function AICoach({ opportunity, user }: AICoachProps) {
       const oppContext = `${opportunity.title} (${opportunity.type}). Provider: ${opportunity.provider}. Description: ${opportunity.description}. Eligibility: ${opportunity.eligibility}.`;
       const userContext = `Education: ${user.educationLevel || 'N/A'}. Need: ${user.financialNeed || 'N/A'}.`;
       
-      const response = await chatWithCoach(oppContext, userContext, messages.slice(1), userMsg);
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          opportunityContext: oppContext,
+          userProfile: userContext,
+          messages: messages.slice(1) // exclude the initial hardcoded greeting if you want, but passing it is fine too. Let's pass the real history
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
       
-      setMessages([...newMessages, { role: "assistant", content: response }]);
+      setMessages([...newMessages, { role: "assistant", content: data.reply }]);
     } catch (err) {
       console.error(err);
       setMessages([...newMessages, { role: "assistant", content: "Something went wrong." }]);
@@ -53,15 +64,22 @@ export default function AICoach({ opportunity, user }: AICoachProps) {
   };
 
   return (
-    <div className="flex flex-col h-[500px] bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-      <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
-        <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
-          <Bot className="h-6 w-6" />
+    <div className="flex flex-col h-full sm:h-[500px] bg-white rounded-2xl sm:border border-slate-200 sm:shadow-sm overflow-hidden">
+      <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+            <Bot className="h-6 w-6" />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900">AI Coach</h3>
+            <p className="text-xs text-slate-500 line-clamp-1 max-w-[200px]">{opportunity.title}</p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-bold text-slate-900">AI Coach</h3>
-          <p className="text-xs text-slate-500">Ask for application advice</p>
-        </div>
+        {onClose && (
+          <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors">
+            <X className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">

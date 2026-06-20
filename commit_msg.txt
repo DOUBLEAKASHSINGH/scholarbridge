@@ -1,9 +1,10 @@
-Phase 4: AI Matching Server Action implemented
+Phase 5: The Coach Chatbot & Saving implemented
 
 Breakdown of Progress:
-Step 5: AI Matching Engine (The Core Feature)
-- Created the Next.js Server Action in /app/actions/match.ts.
-- Used the OpenAI SDK (gpt-4o) with response_format: { type: "json_object" } to enforce structured data.
-- Engineered a system prompt instructing the AI to evaluate the student's full profile (Education, Field of Study, Country, Financial Need) against active opportunities.
-- Ensured the AI returns exactly the top 5 matches containing the opportunityId and a brief matchReason.
-- Updated the Student Dashboard (/app/dashboard/page.tsx) to fetch the profile and opportunities, run the Server Action, and beautifully render the matched opportunities as Tailwind Cards featuring the matchReason.
+Step 6: AI Chat & Save Functionality
+- Added a "Save" button to the opportunity cards that writes a record directly to the saved_opportunities collection in Firestore.
+- Added an "Ask Coach" button on the cards that triggers a slide-over panel.
+- Refactored the AICoach component into an interactive modal interface.
+- Created the /app/api/chat/route.ts API route to securely handle OpenAI chat completions.
+- Engineered the chat system prompt to include the Student Profile data and specific Opportunity context, instructing the AI to act as an encouraging academic advisor.
+- Fully hooked up the Chat UI to the API route for a seamless back-and-forth conversation.
