@@ -19,6 +19,7 @@ export interface Opportunity {
   type: OpportunityType;
   deadline: number; // Unix timestamp
   eligibility: string;
+  targetCountry?: string;
   amount?: string;
   provider: string;
   createdAt: number;
