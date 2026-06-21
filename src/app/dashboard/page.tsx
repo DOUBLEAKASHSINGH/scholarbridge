@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [matches, setMatches] = useState<MatchResult[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeCoachOpp, setActiveCoachOpp] = useState<Opportunity | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [stats, setStats] = useState({ students: 0, opportunities: 0, tracked: 0 });
@@ -89,7 +89,7 @@ export default function DashboardPage() {
       } catch (err) {
         console.error("Failed to fetch opportunities:", err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -98,15 +98,14 @@ export default function DashboardPage() {
     }
   }, [user]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
   if (user?.role === "admin") {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+        </div>
+      );
+    }
     return (
       <div>
         <h1 className="text-2xl font-bold text-slate-900 mb-6">Admin Overview</h1>
@@ -195,9 +194,16 @@ export default function DashboardPage() {
       </div>
 
       <div className="space-y-6">
-        {matches.map((match) => {
-          const opp = opportunities.find(o => o.id === match.opportunityId);
-          if (!opp) return null;
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-slate-200">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-600 mb-4"></div>
+            <p className="text-slate-500 font-medium">Searching for opportunities...</p>
+          </div>
+        ) : (
+          <>
+            {matches.map((match) => {
+              const opp = opportunities.find(o => o.id === match.opportunityId);
+              if (!opp) return null;
 
           return (
             <div key={match.opportunityId} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
@@ -264,18 +270,20 @@ export default function DashboardPage() {
           );
         })}
 
-        {matches.length === 0 && opportunities.length > 0 && (
+        {!isLoading && matches.length === 0 && opportunities.length > 0 && (
           <div className="text-center py-12 bg-white rounded-2xl border border-slate-200">
             <GraduationCap className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Analyzing your profile...</h3>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">No Matches Found</h3>
             <p className="text-slate-500">Check back soon for your personalized matches.</p>
           </div>
         )}
 
-        {opportunities.length === 0 && (
+        {!isLoading && opportunities.length === 0 && (
           <div className="text-center py-12 bg-white rounded-2xl border border-slate-200">
             <p className="text-slate-500">No opportunities available at the moment.</p>
           </div>
+        )}
+      </>
         )}
       </div>
 
