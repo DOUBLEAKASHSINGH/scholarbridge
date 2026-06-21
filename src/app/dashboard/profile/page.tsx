@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
-import { db, storage } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { Save, User as UserIcon, BookOpen, Link as LinkIcon, DollarSign, Building2, Mail, FileUp } from "lucide-react";
 import SearchableSelect from "@/components/SearchableSelect";
@@ -146,8 +145,6 @@ function StudentProfileForm() {
   const [financialNeed, setFinancialNeed] = useState("");
   const [genderIdentity, setGenderIdentity] = useState("");
   const [selectedDemographics, setSelectedDemographics] = useState<string[]>([]);
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [sopFile, setSopFile] = useState<File | null>(null);
   
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -180,34 +177,18 @@ function StudentProfileForm() {
     setLoading(true);
     setSuccess(false);
     try {
-      let finalResumeUrl = resumeUrl;
-      if (resumeFile) {
-        const storageRef = ref(storage, `users/${user.id}/resume_${Date.now()}`);
-        const snapshot = await uploadBytes(storageRef, resumeFile);
-        finalResumeUrl = await getDownloadURL(snapshot.ref);
-      }
-
-      let finalSopUrl = sopUrl;
-      if (sopFile) {
-        const storageRef = ref(storage, `users/${user.id}/sop_${Date.now()}`);
-        const snapshot = await uploadBytes(storageRef, sopFile);
-        finalSopUrl = await getDownloadURL(snapshot.ref);
-      }
-
       await updateDoc(doc(db, "users", user.id), {
         name: fullName,
         countryOfResidence,
         educationLevel,
         fieldOfStudy,
         institute,
-        resumeUrl: finalResumeUrl,
-        sopUrl: finalSopUrl,
+        resumeUrl,
+        sopUrl,
         financialNeed,
         genderIdentity,
         specialDemographics: selectedDemographics.join(", ")
       });
-      setResumeUrl(finalResumeUrl);
-      setSopUrl(finalSopUrl);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
@@ -400,17 +381,7 @@ function StudentProfileForm() {
                   className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 transition-all outline-none"
                   placeholder="Paste Google Drive Link..."
                 />
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-slate-200"></div>
-                  <span className="text-xs font-semibold text-slate-400 uppercase">OR</span>
-                  <div className="flex-1 h-px bg-slate-200"></div>
-                </div>
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-                  className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer"
-                />
+                <p className="text-xs text-slate-500 mt-2">Please provide a public Google Drive or Dropbox link for instant processing.</p>
               </div>
             </div>
             <div className="space-y-3">
@@ -423,17 +394,7 @@ function StudentProfileForm() {
                   className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 transition-all outline-none"
                   placeholder="Paste Google Drive Link..."
                 />
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-slate-200"></div>
-                  <span className="text-xs font-semibold text-slate-400 uppercase">OR</span>
-                  <div className="flex-1 h-px bg-slate-200"></div>
-                </div>
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => setSopFile(e.target.files?.[0] || null)}
-                  className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer"
-                />
+                <p className="text-xs text-slate-500 mt-2">Please provide a public Google Drive or Dropbox link for instant processing.</p>
               </div>
             </div>
           </div>
