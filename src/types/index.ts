@@ -47,6 +47,7 @@ export interface Opportunity {
   sourceUrl?: string;
   targetGender?: string;
   targetDemographic?: string;
+  aiMatchInsight?: string;
   
   createdAt: number;
 }

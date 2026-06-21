@@ -13,7 +13,7 @@ import { doc, setDoc } from "firebase/firestore";
 
 interface MatchResult {
   opportunityId: string;
-  matchReason: string;
+  aiMatchInsight?: string;
 }
 
 export default function DashboardPage() {
@@ -210,9 +210,6 @@ export default function DashboardPage() {
                     <span className="text-sm text-slate-500 font-medium">
                       {opp.provider}
                     </span>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200 ml-auto shadow-sm">
-                      ✨ AI Match Score: 95%
-                    </span>
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">{opp.title}</h3>
                   
@@ -230,9 +227,14 @@ export default function DashboardPage() {
                   
                   <p className="text-slate-600 mb-4 line-clamp-2">{opp.description}</p>
                   
-                  <div className="flex items-center gap-2 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
-                    <Sparkles className="h-4 w-4 text-indigo-500 flex-shrink-0" />
-                    <p className="text-sm text-indigo-700 italic">"{match.matchReason}"</p>
+                  <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100 mt-4">
+                    <Sparkles className="h-4 w-4 text-indigo-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">AI Insight</p>
+                      <p className="text-sm text-slate-600 italic">
+                        {match.aiMatchInsight ? `"${match.aiMatchInsight}"` : "AI-matched based on your profile"}
+                      </p>
+                    </div>
                   </div>
                 </div>
                 

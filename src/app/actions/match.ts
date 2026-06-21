@@ -18,7 +18,7 @@ export async function generateMatches(
     // Return dummy data if no key is provided
     return opportunities.slice(0, 5).map((opp) => ({
       opportunityId: opp.id,
-      matchReason: "This is a great match based on your educational background and field of study.",
+      aiMatchInsight: "This is a great match based on your educational background and field of study.",
     }));
   }
 
@@ -42,7 +42,7 @@ export async function generateMatches(
       
       Evaluate the student's profile against these opportunities and pick the top 5 matches.
       Return a JSON object with a "matches" array containing exactly those 5 matches.
-      Format: { "matches": [{ "opportunityId": "id", "matchReason": "brief explanation why this is a good fit" }] }
+      Format: { "matches": [{ "opportunityId": "id", "aiMatchInsight": "short, one-sentence qualitative insight based on the student's profile" }] }
       Return ONLY valid JSON.
     `;
 
