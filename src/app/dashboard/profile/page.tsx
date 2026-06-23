@@ -204,9 +204,9 @@ function StudentProfileForm() {
         alert(parsedData?.error || "Failed to parse resume content.");
         console.error("Parse Error:", parsedData?.error);
       }
-    } catch (err) {
-      console.error("Parse failed", err);
-      alert("An error occurred during resume processing.");
+    } catch (err: any) {
+      console.error("Parse failed. DETAILED_ERROR:", err);
+      alert(`Error: ${err.message || "An unknown error occurred during resume processing."}`);
     } finally {
       setIsParsing(false);
     }

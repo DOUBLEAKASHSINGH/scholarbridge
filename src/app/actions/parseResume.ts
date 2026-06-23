@@ -89,7 +89,7 @@ export async function parseResumeAction(formData: FormData) {
       throw new Error("Failed to parse Gemini JSON output");
     }
   } catch (error: any) {
-    console.error("Error parsing resume:", error);
-    return { error: error.message || "An unknown error occurred" };
+    console.error("DETAILED_ERROR:", error);
+    throw new Error(error.message || "An unknown error occurred");
   }
 }
