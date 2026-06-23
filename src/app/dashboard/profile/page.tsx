@@ -194,15 +194,12 @@ function StudentProfileForm() {
       formData.append("file", file);
       const parsedData = await parseResumeAction(formData);
 
-      if (parsedData && !parsedData.error) {
+      if (parsedData) {
         setSkills(parsedData.skills || []);
         setProfessionalSummary(parsedData.professionalSummary || "");
         setProjects(parsedData.projects || []);
         setEducationHistory(parsedData.educationHistory || []);
         alert("Resume successfully parsed and populated!");
-      } else {
-        alert(parsedData?.error || "Failed to parse resume content.");
-        console.error("Parse Error:", parsedData?.error);
       }
     } catch (err: any) {
       console.error("Parse failed. DETAILED_ERROR:", err);
