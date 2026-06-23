@@ -12,7 +12,10 @@ export async function parseResumeAction(formData: FormData) {
       throw new Error("No file provided");
     }
 
+    console.log("Received file:", file.name, "Size:", file.size);
+
     // Convert File to Buffer for pdf-parse
+    console.log("Starting PDF-to-Text conversion...");
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
@@ -48,13 +51,23 @@ export async function parseResumeAction(formData: FormData) {
       ${text}
     `;
 
+    console.log("Sending text to Gemini...");
     const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
-    const result = await model.generateContent({
+    
+    // Add 20-second timeout
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error("Gemini API call timed out after 20 seconds")), 20000)
+    );
+
+    const apiCallPromise = model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.1
       }
     });
+
+    const result = await Promise.race([apiCallPromise, timeoutPromise]) as any;
+    console.log("Received response from Gemini");
 
     let content = result.response.text();
     if (!content) throw new Error("No content generated");
@@ -71,10 +84,10 @@ export async function parseResumeAction(formData: FormData) {
       };
     } catch (e) {
       console.error("Failed to parse Gemini output:", e);
-      return null;
+      throw new Error("Failed to parse Gemini JSON output");
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error parsing resume:", error);
-    return null;
+    return { error: error.message || "An unknown error occurred" };
   }
 }
