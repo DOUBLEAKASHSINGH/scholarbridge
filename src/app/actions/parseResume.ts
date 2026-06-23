@@ -12,6 +12,7 @@ export async function parseResumeAction(formData: FormData) {
       throw new Error("No file provided");
     }
 
+    console.log("Stage 1: File received at", new Date().toISOString());
     console.log("Received file:", file.name, "Size:", file.size);
 
     console.log("Starting PDF-to-Text conversion...");
@@ -21,6 +22,7 @@ export async function parseResumeAction(formData: FormData) {
     // Parse PDF text
     const data = await pdf(buffer);
     const text = data.text;
+    console.log("Stage 2: PDF Parsing finished at", new Date().toISOString());
 
     if (!text || text.trim() === "") {
       throw new Error("Could not extract text from PDF");
@@ -66,6 +68,7 @@ export async function parseResumeAction(formData: FormData) {
     });
 
     const result = await Promise.race([apiCallPromise, timeoutPromise]) as any;
+    console.log("Stage 3: Gemini API response received at", new Date().toISOString());
     console.log("Received response from Gemini");
 
     let content = result.response.text();
