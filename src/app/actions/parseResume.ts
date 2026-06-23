@@ -31,6 +31,7 @@ export async function parseResumeAction(formData: FormData) {
     if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "dummy_key") {
       // Dummy response for missing API key
       return {
+        success: true,
         skills: ["JavaScript", "React", "Next.js"],
         professionalSummary: "This is a dummy parsed summary due to missing API key.",
         educationHistory: [{ degree: "B.S. Computer Science", institute: "Dummy University", year: "2026" }],
@@ -79,6 +80,7 @@ export async function parseResumeAction(formData: FormData) {
     try {
       const parsed = JSON.parse(content);
       return {
+        success: true,
         skills: parsed.skills || [],
         educationHistory: parsed.educationHistory || parsed.education || [],
         projects: parsed.projects || [],
@@ -89,7 +91,7 @@ export async function parseResumeAction(formData: FormData) {
       throw new Error("Failed to parse Gemini JSON output");
     }
   } catch (error: any) {
-    console.error("DETAILED_ERROR:", error);
-    throw new Error(error.message || "An unknown error occurred");
+    console.error("DETAILED_ERROR:", error.stack || error);
+    return { success: false, error: error.message || "An unknown error occurred" };
   }
 }
