@@ -479,7 +479,7 @@ function StudentProfileForm() {
         </div>
 
         {/* AI Extracted Data UI */}
-        {(skills.length > 0 || professionalSummary) && (
+        {(skills.length > 0 || professionalSummary || educationHistory.length > 0 || projects.length > 0) && (
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
             <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2">
@@ -500,6 +500,19 @@ function StudentProfileForm() {
               </div>
 
               <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">Education ({educationHistory.length})</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {educationHistory.map((edu, idx) => (
+                    <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                      <h4 className="font-bold text-slate-900 mb-1">{edu.degree}</h4>
+                      <p className="text-sm text-slate-700 font-medium">{edu.institute}</p>
+                      <p className="text-xs text-slate-500 mt-1">{edu.year}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
                 <label className="text-sm font-semibold text-slate-700">Skills ({skills.length})</label>
                 <div className="flex flex-wrap gap-2">
                   {skills.map((skill, idx) => (
@@ -514,14 +527,24 @@ function StudentProfileForm() {
                 <label className="text-sm font-semibold text-slate-700">Projects ({projects.length})</label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {projects.map((proj, idx) => (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                      <h4 className="font-bold text-slate-900 mb-1">{proj.name}</h4>
-                      <p className="text-sm text-slate-600 line-clamp-2 mb-2">{proj.description}</p>
+                    <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col gap-3">
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-bold text-slate-900">{proj.name}</h4>
+                      </div>
                       <div className="flex flex-wrap gap-1">
-                        {proj.techStack?.slice(0, 3).map((tech: string, i: number) => (
+                        {proj.techStack?.map((tech: string, i: number) => (
                           <span key={i} className="px-2 py-0.5 bg-white text-slate-500 text-xs font-medium rounded border border-slate-200">{tech}</span>
                         ))}
                       </div>
+                      <textarea
+                        value={proj.description}
+                        onChange={(e) => {
+                          const newProjects = [...projects];
+                          newProjects[idx].description = e.target.value;
+                          setProjects(newProjects);
+                        }}
+                        className="w-full text-sm text-slate-600 bg-white border border-slate-200 rounded-lg p-2 resize-none h-24 outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
                     </div>
                   ))}
                 </div>
