@@ -5,8 +5,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db, storage } from "@/lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { parseResumeAction } from "@/app/actions/parseResume";
-import { useAuth } from "@/contexts/AuthContext";
-import { Save, User as UserIcon, BookOpen, Link as LinkIcon, DollarSign, Building2, Mail, FileUp } from "lucide-react";
+import { Save, User as UserIcon, BookOpen, Link as LinkIcon, DollarSign, Building2, Mail, FileUp, Plus, X, Trash2 } from "lucide-react";
 import SearchableSelect from "@/components/SearchableSelect";
 import { COUNTRIES } from "@/lib/countries";
 
@@ -154,6 +153,7 @@ function StudentProfileForm() {
   const [projects, setProjects] = useState<any[]>([]);
   const [educationHistory, setEducationHistory] = useState<any[]>([]);
   const [isParsing, setIsParsing] = useState(false);
+  const [newSkill, setNewSkill] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -478,16 +478,15 @@ function StudentProfileForm() {
           </div>
         </div>
 
-        {/* AI Extracted Data UI */}
-        {(skills.length > 0 || professionalSummary || educationHistory.length > 0 || projects.length > 0) && (
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-            <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-indigo-500" />
-                <h2 className="text-lg font-bold text-slate-800">AI-Extracted Profile Data</h2>
-              </div>
-              <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">Gemini Extracted</span>
+        {/* Academic & Professional Profile UI */}
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+          <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5 text-indigo-500" />
+              <h2 className="text-lg font-bold text-slate-800">Academic & Professional Profile</h2>
             </div>
+            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">Auto-Populates via PDF</span>
+          </div>
             
             <div className="space-y-6">
               <div className="space-y-2">
@@ -499,59 +498,162 @@ function StudentProfileForm() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Education ({educationHistory.length})</label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {educationHistory.map((edu, idx) => (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                      <h4 className="font-bold text-slate-900 mb-1">{edu.degree}</h4>
-                      <p className="text-sm text-slate-700 font-medium">{edu.institute}</p>
-                      <p className="text-xs text-slate-500 mt-1">{edu.year}</p>
-                    </div>
-                  ))}
-                </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-slate-700">Education</label>
+                <button
+                  type="button"
+                  onClick={() => setEducationHistory([...educationHistory, { degree: "", institute: "", year: "" }])}
+                  className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+                >
+                  <Plus className="h-3 w-3" /> Add Education
+                </button>
               </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Skills ({skills.length})</label>
-                <div className="flex flex-wrap gap-2">
-                  {skills.map((skill, idx) => (
-                    <span key={idx} className="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full border border-slate-200">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Projects ({projects.length})</label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {projects.map((proj, idx) => (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col gap-3">
-                      <div className="flex justify-between items-start">
-                        <h4 className="font-bold text-slate-900">{proj.name}</h4>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {proj.techStack?.map((tech: string, i: number) => (
-                          <span key={i} className="px-2 py-0.5 bg-white text-slate-500 text-xs font-medium rounded border border-slate-200">{tech}</span>
-                        ))}
-                      </div>
-                      <textarea
-                        value={proj.description}
+              <div className="space-y-4">
+                {educationHistory.map((edu, idx) => (
+                  <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200 relative group">
+                    <button
+                      type="button"
+                      onClick={() => setEducationHistory(educationHistory.filter((_, i) => i !== idx))}
+                      className="absolute top-3 right-3 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Degree (e.g., B.S. Computer Science)"
+                        value={edu.degree}
                         onChange={(e) => {
-                          const newProjects = [...projects];
-                          newProjects[idx].description = e.target.value;
-                          setProjects(newProjects);
+                          const newEdu = [...educationHistory];
+                          newEdu[idx].degree = e.target.value;
+                          setEducationHistory(newEdu);
                         }}
-                        className="w-full text-sm text-slate-600 bg-white border border-slate-200 rounded-lg p-2 resize-none h-24 outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Institute Name"
+                        value={edu.institute}
+                        onChange={(e) => {
+                          const newEdu = [...educationHistory];
+                          newEdu[idx].institute = e.target.value;
+                          setEducationHistory(newEdu);
+                        }}
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Year (e.g., 2024)"
+                        value={edu.year}
+                        onChange={(e) => {
+                          const newEdu = [...educationHistory];
+                          newEdu[idx].year = e.target.value;
+                          setEducationHistory(newEdu);
+                        }}
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none md:col-span-2"
                       />
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Skills</label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {skills.map((skill, idx) => (
+                  <span key={idx} className="px-3 py-1 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-full border border-indigo-100 flex items-center gap-1">
+                    {skill}
+                    <button
+                      type="button"
+                      onClick={() => setSkills(skills.filter((_, i) => i !== idx))}
+                      className="hover:text-indigo-900 focus:outline-none"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <input
+                type="text"
+                placeholder="Type a skill and press Enter..."
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
+                      setSkills([...skills, newSkill.trim()]);
+                      setNewSkill("");
+                    }
+                  }
+                }}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-slate-700">Projects</label>
+                <button
+                  type="button"
+                  onClick={() => setProjects([...projects, { name: "", techStack: [], description: "" }])}
+                  className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+                >
+                  <Plus className="h-3 w-3" /> Add Project
+                </button>
+              </div>
+              <div className="space-y-4">
+                {projects.map((proj, idx) => (
+                  <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200 relative group flex flex-col gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setProjects(projects.filter((_, i) => i !== idx))}
+                      className="absolute top-3 right-3 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Project Name"
+                        value={proj.name}
+                        onChange={(e) => {
+                          const newProjects = [...projects];
+                          newProjects[idx].name = e.target.value;
+                          setProjects(newProjects);
+                        }}
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Tech Stack (comma separated)"
+                        value={Array.isArray(proj.techStack) ? proj.techStack.join(", ") : proj.techStack}
+                        onChange={(e) => {
+                          const newProjects = [...projects];
+                          newProjects[idx].techStack = e.target.value.split(",").map((s: string) => s.trim());
+                          setProjects(newProjects);
+                        }}
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      />
+                    </div>
+                    <textarea
+                      placeholder="Project Description"
+                      value={proj.description}
+                      onChange={(e) => {
+                        const newProjects = [...projects];
+                        newProjects[idx].description = e.target.value;
+                        setProjects(newProjects);
+                      }}
+                      className="w-full text-sm text-slate-600 bg-white border border-slate-200 rounded-lg p-2 resize-none h-24 outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         <div className="pt-2 flex justify-end">
           <button
