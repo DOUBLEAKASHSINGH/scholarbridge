@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
-import { db, storage } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db } from "@/lib/firebase";
 import { parseResumeAction } from "@/app/actions/parseResume";
 import { useAuth } from "@/contexts/AuthContext";
 import { Save, User as UserIcon, BookOpen, Link as LinkIcon, DollarSign, Building2, Mail, FileUp, Plus, X, Trash2 } from "lucide-react";
@@ -184,22 +183,16 @@ function StudentProfileForm() {
     }
   }, [user]);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
+  const handleUrlExtraction = async () => {
+    if (!resumeUrl || !user) {
+      alert("Please enter a valid Resume URL first.");
+      return;
+    }
     
     setIsParsing(true);
     try {
-      // 1. Upload to Storage
-      const storageRef = ref(storage, `users/${user.id}/resume_${Date.now()}`);
-      const snapshot = await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(snapshot.ref);
-      setResumeUrl(url);
-
-      // 2. Parse with AI Action
-      const formData = new FormData();
-      formData.append("resume", file);
-      const parsedData = await parseResumeAction(formData);
+      // Parse with AI Action directly from URL
+      const parsedData = await parseResumeAction(resumeUrl);
 
       if (parsedData && !parsedData.error) {
         setSkills(parsedData.skills || []);
@@ -434,19 +427,14 @@ function StudentProfileForm() {
                   className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 transition-all outline-none"
                   placeholder="Paste Google Drive Link..."
                 />
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-slate-200"></div>
-                  <span className="text-xs font-semibold text-slate-400 uppercase">OR AUTO-EXTRACT FROM PDF</span>
-                  <div className="flex-1 h-px bg-slate-200"></div>
-                </div>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleFileUpload}
-                  disabled={isParsing}
-                  className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer disabled:opacity-50"
-                />
-                {isParsing && <p className="text-sm font-medium text-blue-600 animate-pulse mt-2">Uploading & Parsing PDF using AI...</p>}
+                <button
+                  type="button"
+                  onClick={handleUrlExtraction}
+                  disabled={isParsing || !resumeUrl}
+                  className="w-full px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl transition-all disabled:opacity-50"
+                >
+                  {isParsing ? "Extracting Data from URL..." : "Auto-Extract Profile Data from URL"}
+                </button>
               </div>
             </div>
             <div className="space-y-3">

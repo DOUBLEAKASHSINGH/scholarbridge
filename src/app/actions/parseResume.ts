@@ -5,18 +5,31 @@ const pdf = require("pdf-parse");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
 
-export async function parseResumeAction(formData: FormData) {
+export async function parseResumeAction(url: string) {
   try {
-    const file = formData.get("resume") as File;
-    if (!file) {
-      throw new Error("No file provided");
+    if (!url) {
+      throw new Error("No URL provided");
     }
 
-    console.log("Received file:", file.name, "Size:", file.size);
+    console.log("Fetching resume from URL:", url);
 
-    // Convert File to Buffer for pdf-parse
+    // Basic Google Drive link transformer
+    let fetchUrl = url;
+    if (url.includes("drive.google.com")) {
+      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        fetchUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
+        console.log("Transformed Google Drive link to direct download:", fetchUrl);
+      }
+    }
+
+    const response = await fetch(fetchUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file from URL: ${response.statusText}`);
+    }
+
     console.log("Starting PDF-to-Text conversion...");
-    const arrayBuffer = await file.arrayBuffer();
+    const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
     // Parse PDF text
