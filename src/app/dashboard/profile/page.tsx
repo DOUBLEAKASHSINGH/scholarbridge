@@ -5,6 +5,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db, storage } from "@/lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { parseResumeAction } from "@/app/actions/parseResume";
+import { useAuth } from "@/contexts/AuthContext";
 import { Save, User as UserIcon, BookOpen, Link as LinkIcon, DollarSign, Building2, Mail, FileUp, Plus, X, Trash2 } from "lucide-react";
 import SearchableSelect from "@/components/SearchableSelect";
 import { COUNTRIES } from "@/lib/countries";
