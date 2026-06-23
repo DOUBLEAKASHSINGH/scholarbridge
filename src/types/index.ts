@@ -18,6 +18,13 @@ export interface User {
   // Admin Fields
   organizationName?: string;
   contactEmail?: string;
+  
+  // AI Extracted Profile Fields
+  skills?: string[];
+  educationHistory?: { degree: string; institute: string; year: string }[];
+  projects?: { name: string; description: string; techStack: string[] }[];
+  professionalSummary?: string;
+  
   createdAt: number;
 }
 

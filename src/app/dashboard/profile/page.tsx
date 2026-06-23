@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { parseResumeAction } from "@/app/actions/parseResume";
 import { useAuth } from "@/contexts/AuthContext";
 import { Save, User as UserIcon, BookOpen, Link as LinkIcon, DollarSign, Building2, Mail, FileUp } from "lucide-react";
 import SearchableSelect from "@/components/SearchableSelect";
@@ -146,6 +148,13 @@ function StudentProfileForm() {
   const [genderIdentity, setGenderIdentity] = useState("");
   const [selectedDemographics, setSelectedDemographics] = useState<string[]>([]);
   
+  // AI Extracted Fields
+  const [skills, setSkills] = useState<string[]>([]);
+  const [professionalSummary, setProfessionalSummary] = useState("");
+  const [projects, setProjects] = useState<any[]>([]);
+  const [educationHistory, setEducationHistory] = useState<any[]>([]);
+  const [isParsing, setIsParsing] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -167,8 +176,46 @@ function StudentProfileForm() {
             ? user.specialDemographics.split(", ")
             : []
       );
+      setSkills(user.skills || []);
+      setProfessionalSummary(user.professionalSummary || "");
+      setProjects(user.projects || []);
+      setEducationHistory(user.educationHistory || []);
     }
   }, [user]);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    
+    setIsParsing(true);
+    try {
+      // 1. Upload to Storage
+      const storageRef = ref(storage, `users/${user.id}/resume_${Date.now()}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+      setResumeUrl(url);
+
+      // 2. Parse with AI Action
+      const formData = new FormData();
+      formData.append("resume", file);
+      const parsedData = await parseResumeAction(formData);
+
+      if (parsedData) {
+        setSkills(parsedData.skills || []);
+        setProfessionalSummary(parsedData.professionalSummary || "");
+        setProjects(parsedData.projects || []);
+        setEducationHistory(parsedData.educationHistory || []);
+        alert("Resume successfully parsed and populated!");
+      } else {
+        alert("Failed to parse resume content.");
+      }
+    } catch (err) {
+      console.error("Parse failed", err);
+      alert("An error occurred during resume processing.");
+    } finally {
+      setIsParsing(false);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -187,7 +234,11 @@ function StudentProfileForm() {
         sopUrl,
         financialNeed,
         genderIdentity,
-        specialDemographics: selectedDemographics.join(", ")
+        specialDemographics: selectedDemographics.join(", "),
+        skills,
+        professionalSummary,
+        projects,
+        educationHistory
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -381,7 +432,19 @@ function StudentProfileForm() {
                   className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 transition-all outline-none"
                   placeholder="Paste Google Drive Link..."
                 />
-                <p className="text-xs text-slate-500 mt-2">Please provide a public Google Drive or Dropbox link for instant processing.</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-slate-200"></div>
+                  <span className="text-xs font-semibold text-slate-400 uppercase">OR AUTO-EXTRACT FROM PDF</span>
+                  <div className="flex-1 h-px bg-slate-200"></div>
+                </div>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleFileUpload}
+                  disabled={isParsing}
+                  className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer disabled:opacity-50"
+                />
+                {isParsing && <p className="text-sm font-medium text-blue-600 animate-pulse mt-2">Uploading & Parsing PDF using AI...</p>}
               </div>
             </div>
             <div className="space-y-3">
@@ -414,6 +477,58 @@ function StudentProfileForm() {
             ></textarea>
           </div>
         </div>
+
+        {/* AI Extracted Data UI */}
+        {(skills.length > 0 || professionalSummary) && (
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+            <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-indigo-500" />
+                <h2 className="text-lg font-bold text-slate-800">AI-Extracted Profile Data</h2>
+              </div>
+              <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">Gemini Extracted</span>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">Professional Summary</label>
+                <textarea
+                  value={professionalSummary}
+                  onChange={(e) => setProfessionalSummary(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none h-24 resize-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">Skills ({skills.length})</label>
+                <div className="flex flex-wrap gap-2">
+                  {skills.map((skill, idx) => (
+                    <span key={idx} className="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full border border-slate-200">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">Projects ({projects.length})</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {projects.map((proj, idx) => (
+                    <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                      <h4 className="font-bold text-slate-900 mb-1">{proj.name}</h4>
+                      <p className="text-sm text-slate-600 line-clamp-2 mb-2">{proj.description}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {proj.techStack?.slice(0, 3).map((tech: string, i: number) => (
+                          <span key={i} className="px-2 py-0.5 bg-white text-slate-500 text-xs font-medium rounded border border-slate-200">{tech}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="pt-2 flex justify-end">
           <button
